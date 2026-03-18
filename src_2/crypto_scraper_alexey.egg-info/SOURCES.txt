@@ -5,3 +5,5 @@ src_2/crypto_scraper_alexey.egg-info/SOURCES.txt
 src_2/crypto_scraper_alexey.egg-info/dependency_links.txt
 src_2/crypto_scraper_alexey.egg-info/top_level.txt
 src_2/scraper/__init__.py
+src_2/scraper/scraper_cripto.py
+src_2/scraper/test_scraper.py

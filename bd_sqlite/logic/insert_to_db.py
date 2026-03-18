@@ -1,0 +1,18 @@
+import sqlite3
+from datetime import datetime # Импортируем время
+
+def save_to_db(coin_name,  price, current_time):
+    # Используем with для автоматического закрытия соединения
+    with sqlite3.connect('scraper_data_v1.db') as conn:
+        cursor = conn.cursor()
+        # Открываем файл для чтения данных
+        # current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Вставляем данные в таблицу
+        cursor.execute('''
+            INSERT INTO scrap (coin_name, price,  date_checked)
+            VALUES (?, ?, ?)
+        ''', (coin_name, price, current_time))
+        
+current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+save_to_db('Bitcoin', 77777, current_time)

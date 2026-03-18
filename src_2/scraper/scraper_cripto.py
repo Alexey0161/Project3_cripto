@@ -3,6 +3,8 @@ import sqlite3
 from selenium import webdriver
 from selenium.webdriver.common.by import By # Помогает искать элементы
 import time
+from datetime import datetime # Импортируем время
+from  src_2.bd_sqlite.logic.insert_to_db import save_to_db
 driver = webdriver.Chrome()
 ##### 1.  Вариант для Биткоина на его именной странице <---- описан процесс обучения поиску
 # try:
@@ -28,6 +30,21 @@ driver = webdriver.Chrome()
 # except Exception as e:
 #     print(f"Ой, Техлид, у нас проблема: {e}")
 
+
+# def save_to_db(title, price, sales, stock, current_time):
+#     # Используем with для автоматического закрытия соединения
+#     with sqlite3.connect('books_data_v3.db') as conn:
+#         cursor = conn.cursor()
+#         # Открываем файл для чтения данных
+        
+
+#         # Вставляем данные в таблицу
+#         cursor.execute('''
+#             INSERT INTO books (coin_name, price,  date_checked)
+#             VALUES (?, ?, ?)
+#         ''', (title, price, sales, stock, current_time))
+# База данных автоматически закроется после выхода из блока with
+    
 ### 2. Вариант для всей таблицы
 try:
     driver.get("https://coinmarketcap.com/")
@@ -42,7 +59,7 @@ rows = driver.find_elements(By.CSS_SELECTOR, "table.cmc-table tbody tr")
 
 # 2. Запускаем цикл по первым 10 строкам
 for row in rows[:5]:
-    
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
         # ВАЖНО: ищем ВНУТРИ текущей строки row (ставим row. перед find_element)
         
