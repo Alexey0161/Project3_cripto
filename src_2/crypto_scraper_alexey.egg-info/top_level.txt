@@ -1,1 +1,3 @@
+bd_sqlite
+logic
 scraper

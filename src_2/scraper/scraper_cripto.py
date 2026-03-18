@@ -4,7 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By # Помогает искать элементы
 import time
 from datetime import datetime # Импортируем время
-from  src_2.bd_sqlite.logic.insert_to_db import save_to_db
+from  logic.insert_to_db import insert_to_db
+from  logic.clean_name import clean_name
 driver = webdriver.Chrome()
 ##### 1.  Вариант для Биткоина на его именной странице <---- описан процесс обучения поиску
 # try:
@@ -67,6 +68,7 @@ for row in rows[:5]:
         # name = row.find_element(By.CSS_SELECTOR, ".coin-item-name").text
         # используем номер столбца, в котором лежит название крипты
         name = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
+        name_clean = clean_name(name)
     
         
         # ищем от тега div до span, дополнительное условие, что в строке должно быть
@@ -79,8 +81,8 @@ for row in rows[:5]:
         price = row.find_element(By.CSS_SELECTOR, 'div [class*="sc-"] >span').text
  
         
-        print(f"Крипта: {name} | Цена: {price}")
-        
+        print(f"Крипта: {name} | Цена: {price} | {current_time}")
+        insert_to_db(name_clean, price, current_time)
     except Exception as e:
         print(f'Ошибка: {e}')
         # Если в строке реклама или она пустая — просто идем дальше

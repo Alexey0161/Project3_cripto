@@ -1,13 +1,17 @@
 import sqlite3
-def save_to_db(title, price, sales, stock, current_time):
+from datetime import datetime
+def insert_to_db(coin_name, price,  current_time):
     # Используем with для автоматического закрытия соединения
-    with sqlite3.connect('books_data_v3.db') as conn:
+    with sqlite3.connect('scraper_data_v1.db') as conn:
         cursor = conn.cursor()
         # Открываем файл для чтения данных
         
 
         # Вставляем данные в таблицу
         cursor.execute('''
-            INSERT INTO books (coin_name, price,  date_checked)
+            INSERT INTO scrap (coin_name, price,  date_checked)
             VALUES (?, ?, ?)
-        ''', (title, price, sales, stock, current_time))
+        ''', (coin_name, price, current_time))
+        
+# current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# insert_to_db('Mycoin', 99999, current_time)
