@@ -6,53 +6,15 @@ import time
 from datetime import datetime # Импортируем время
 from  logic.insert_to_db import insert_to_db
 from  logic.clean_name import clean_name
+from logic.clean_price import clean_price
 driver = webdriver.Chrome()
-##### 1.  Вариант для Биткоина на его именной странице <---- описан процесс обучения поиску
-# try:
-#     # driver.get("https://coinmarketcap.com/")
-#     driver.get("https://coinmarketcap.com/currencies/bitcoin/")
-#     time.sleep(3) # Ждем чуть дольше для JS
 
-#     # 1. Ищем название (оно обычно в <h1> или крупном <span>)
-#     # На CoinMarketCap название монеты часто имеет класс 'coin-name-mobile' или просто лежит в h1
-#     name = driver.find_element(By.TAG_NAME, "h1").text
-    
-#     # 2. Ищем цену (используем более точный селектор)
-#     # Посмотрим в F12, там у цены должен быть класс типа "fs-2" или "priceValue"
-#     # Для примера возьмем селектор по классу (он может меняться, проверьте в F12!)
-#     
-#     # Мы ищем тег span, у которого есть класс, отвечающий за цену
-# # На CoinMarketCap это часто динамические классы, но можно зацепиться за общие
-#     # price=driver.find_element(By.CSS_SELECTOR,'[class*="price"]').text
-#     price=driver.find_element(By.CSS_SELECTOR,'#section-coin-overview > div.sc-c1554bc0-0.efjLyZ.flexStart.alignBaseline > span').text
-#     print(f"Валюта: {name}")
-#     print(f"Текущая цена: {price}")
-
-# except Exception as e:
-#     print(f"Ой, Техлид, у нас проблема: {e}")
-
-
-# def save_to_db(title, price, sales, stock, current_time):
-#     # Используем with для автоматического закрытия соединения
-#     with sqlite3.connect('books_data_v3.db') as conn:
-#         cursor = conn.cursor()
-#         # Открываем файл для чтения данных
-        
-
-#         # Вставляем данные в таблицу
-#         cursor.execute('''
-#             INSERT INTO books (coin_name, price,  date_checked)
-#             VALUES (?, ?, ?)
-#         ''', (title, price, sales, stock, current_time))
-# База данных автоматически закроется после выхода из блока with
-    
-### 2. Вариант для всей таблицы
+### 1. Вариант для всей таблицы
 try:
     driver.get("https://coinmarketcap.com/")
-    # driver.get("https://coinmarketcap.com/currencies/bitcoin/")
     time.sleep(3) # Ждем чуть дольше для JS
 except Exception as e:
-    print(f"Ой, Техлид, у нас проблема: {e}")
+    print(f"Ошибка: {e}")
     # 1. Сначала находим все строки таблицы (Rows)
 # Мы используем find_elements (во множественном числе!), чтобы получить список
 # Селектор "tbody tr" говорит: "найди все строки внутри тела таблицы"
@@ -64,22 +26,12 @@ for row in rows[:5]:
     try:
         # ВАЖНО: ищем ВНУТРИ текущей строки row (ставим row. перед find_element)
         
-        # Ищем название (используем название класса, которое нашли в F12)
-        # name = row.find_element(By.CSS_SELECTOR, ".coin-item-name").text
         # используем номер столбца, в котором лежит название крипты
         name = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
         name_clean = clean_name(name)
     
-        
-        # ищем от тега div до span, дополнительное условие, что в строке должно быть
-        ### название класса, у которого первые буквы sc, так как класс динамический, то цифры
-        #### могут меняться но через *= мы найдем название класса в котором зашит текст цены
-        ##### а далее через метед CSS-селектора - .text мы находим текст, а это и есть цена в строковом виде.
-        ###### потому что мы знаем, что все буквенные или цифровые символы разработчики делают типа text
-        # price = row.find_element(By.CSS_SELECTOR, 'div[class*="sc-"] > span').text
-        # price = row.find_element(By.CSS_SELECTOR, 'td:nth-child(4)').text
         price = row.find_element(By.CSS_SELECTOR, 'div [class*="sc-"] >span').text
- 
+        price = clean_price(price)
         
         print(f"Крипта: {name} | Цена: {price} | {current_time}")
         insert_to_db(name_clean, price, current_time)
