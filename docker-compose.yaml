@@ -1,0 +1,24 @@
+services:
+  airflow-master:
+    image: apache/airflow:2.7.1
+    user: "${AIRFLOW_UID:-1000}:0"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./src_2:/opt/airflow/src_2
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      #- _PIP_ADDITIONAL_REQUIREMENTS=selenium
+    command: standalone
+    ports:
+      - "8081:8080"
+
+  selenium-chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: '2gb'
