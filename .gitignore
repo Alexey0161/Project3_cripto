@@ -1,6 +1,6 @@
 venv/__pycache__/*.db
 *.db
-**/Варианты_кода/
+**/Varianty_coda/
 *.рус
 **/__pycache__/
 **/logs/
