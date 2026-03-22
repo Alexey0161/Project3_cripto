@@ -1,6 +1,7 @@
 import re
 
 def clean_name(name):
+    
     pattern = r'^([^/\s]+)'
     
     match = re.match(pattern, name)

@@ -2,7 +2,7 @@ import sqlite3
 import os
 from datetime import datetime
 
-def insert_to_db(coin_name, price, current_time):
+def insert_to_db(coin_name,  price, current_time): 
     print(f'Запускаем тестовую вставку данных в таблицу БД')
     # Определяем ПРЯМОЙ путь к базе относительно текущего файла
     # Это сработает и в Windows, и в Docker одинаково!
@@ -14,12 +14,12 @@ def insert_to_db(coin_name, price, current_time):
     with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT INTO scrap (coin_name, price, date_checked)
-            VALUES (?, ?, ?)
-        ''', (coin_name, price, current_time))
+            INSERT INTO scrap (coin_name,  price, date_checked)
+            VALUES (?, ?, ?, ?)
+        ''', (coin_name,  price, current_time))
 if __name__ == "__main__":
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    insert_to_db('Mycoin', 99999, current_time)
+    insert_to_db('Mycoin',  99999, current_time)
 # import sqlite3
 # from datetime import datetime
 # def insert_to_db(coin_name, price,  current_time):
