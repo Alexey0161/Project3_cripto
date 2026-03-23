@@ -21,8 +21,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 
 from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
@@ -64,7 +63,9 @@ class WebDriver(ChromiumDriver):
         """
         if executable_path != "msedgedriver":
             warnings.warn(
-                "executable_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "executable_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
         if not options:

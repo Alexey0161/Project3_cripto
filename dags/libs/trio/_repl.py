@@ -61,7 +61,7 @@ async def run_repl(console: TrioInteractiveConsole) -> None:
         f'Use "await" directly instead of "trio.run()".\n'
         f'Type "help", "copyright", "credits" or "license" '
         f"for more information.\n"
-        f'{getattr(sys, "ps1", ">>> ")}import trio'
+        f"{getattr(sys, 'ps1', '>>> ')}import trio"
     )
     try:
         await trio.to_thread.run_sync(console.interact, banner)

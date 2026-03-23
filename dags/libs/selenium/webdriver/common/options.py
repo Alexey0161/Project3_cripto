@@ -15,8 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
@@ -88,7 +87,9 @@ class BaseOptions(metaclass=ABCMeta):
         if strategy in ["normal", "eager", "none"]:
             self.set_capability("pageLoadStrategy", strategy)
         else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
+            raise ValueError(
+                "Strategy can only be one of the following: normal, eager, none"
+            )
 
     @property
     def unhandled_prompt_behavior(self) -> str:
@@ -105,7 +106,13 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param behavior: behavior to use when an alert is encountered
         """
-        if behavior in ["dismiss", "accept", "dismiss and notify", "accept and notify", "ignore"]:
+        if behavior in [
+            "dismiss",
+            "accept",
+            "dismiss and notify",
+            "accept and notify",
+            "ignore",
+        ]:
             self.set_capability("unhandledPromptBehavior", behavior)
         else:
             raise ValueError(
@@ -130,7 +137,9 @@ class BaseOptions(metaclass=ABCMeta):
         if all(x in ("implicit", "pageLoad", "script") for x in timeouts.keys()):
             self.set_capability("timeouts", timeouts)
         else:
-            raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
+            raise ValueError(
+                "Timeout keys can only be one of the following: implicit, pageLoad, script"
+            )
 
     def enable_mobile(
         self,

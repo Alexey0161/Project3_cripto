@@ -15,9 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+)
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -85,7 +87,9 @@ class SwitchTo:
                 frame_reference = self._driver.find_element(By.ID, frame_reference)
             except NoSuchElementException:
                 try:
-                    frame_reference = self._driver.find_element(By.NAME, frame_reference)
+                    frame_reference = self._driver.find_element(
+                        By.NAME, frame_reference
+                    )
                 except NoSuchElementException:
                     raise NoSuchFrameException(frame_reference)
 

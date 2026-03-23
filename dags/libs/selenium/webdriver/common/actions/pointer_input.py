@@ -20,8 +20,7 @@ from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
 
 from .input_device import InputDevice
-from .interaction import POINTER
-from .interaction import POINTER_KINDS
+from .interaction import POINTER, POINTER_KINDS
 
 
 class PointerInput(InputDevice):
@@ -64,7 +63,12 @@ class PointerInput(InputDevice):
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):
-        return {"type": self.type, "parameters": {"pointerType": self.kind}, "id": self.name, "actions": self.actions}
+        return {
+            "type": self.type,
+            "parameters": {"pointerType": self.kind},
+            "id": self.name,
+            "actions": self.actions,
+        }
 
     def _convert_keys(self, actions: typing.Dict[str, typing.Any]):
         out = {}

@@ -17,11 +17,13 @@
 
 import re
 
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (
+    NoAlertPresentException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    StaleElementReferenceException,
+    WebDriverException,
+)
 from selenium.webdriver.remote.webdriver import WebElement
 
 """
@@ -185,7 +187,11 @@ def visibility_of_any_elements_located(locator):
     """
 
     def _predicate(driver):
-        return [element for element in driver.find_elements(*locator) if _element_if_visible(element)]
+        return [
+            element
+            for element in driver.find_elements(*locator)
+            if _element_if_visible(element)
+        ]
 
     return _predicate
 

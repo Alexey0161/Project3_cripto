@@ -14,10 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Dict, List, Optional, Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -70,7 +67,11 @@ class RelativeBy:
         assert "mid" in ids
     """
 
-    def __init__(self, root: Optional[Dict[Union[By, str], str]] = None, filters: Optional[List] = None):
+    def __init__(
+        self,
+        root: Optional[Dict[Union[By, str], str]] = None,
+        filters: Optional[List] = None,
+    ):
         """
         Creates a new RelativeBy object. It is preferred if you use the
         `locate_with` method as this signature could change.
@@ -89,7 +90,9 @@ class RelativeBy:
             - element_or_locator: Element to look above
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException(
+                "Element or locator must be given when calling above method"
+            )
 
         self.filters.append({"kind": "above", "args": [element_or_locator]})
         return self
@@ -101,43 +104,57 @@ class RelativeBy:
             - element_or_locator: Element to look below
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling below method")
+            raise WebDriverException(
+                "Element or locator must be given when calling below method"
+            )
 
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
 
-    def to_left_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    def to_left_of(
+        self, element_or_locator: Union[WebElement, Dict] = None
+    ) -> "RelativeBy":
         """
         Add a filter to look for elements to the left of.
         :Args:
             - element_or_locator: Element to look to the left of
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling to_left_of method")
+            raise WebDriverException(
+                "Element or locator must be given when calling to_left_of method"
+            )
 
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
 
-    def to_right_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    def to_right_of(
+        self, element_or_locator: Union[WebElement, Dict] = None
+    ) -> "RelativeBy":
         """
         Add a filter to look for elements right of.
         :Args:
             - element_or_locator: Element to look right of
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling to_right_of method")
+            raise WebDriverException(
+                "Element or locator must be given when calling to_right_of method"
+            )
 
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
 
-    def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None) -> "RelativeBy":
+    def near(
+        self, element_or_locator_distance: Union[WebElement, Dict, int] = None
+    ) -> "RelativeBy":
         """
         Add a filter to look for elements near.
         :Args:
             - element_or_locator_distance: Element to look near by the element or within a distance
         """
         if not element_or_locator_distance:
-            raise WebDriverException("Element or locator or distance must be given when calling near method")
+            raise WebDriverException(
+                "Element or locator or distance must be given when calling near method"
+            )
 
         self.filters.append({"kind": "near", "args": [element_or_locator_distance]})
         return self

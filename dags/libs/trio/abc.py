@@ -8,16 +8,40 @@
 # Uses `from x import y as y` for compatibility with `pyright --verifytypes` (#2625)
 from ._abc import (
     AsyncResource as AsyncResource,
+)
+from ._abc import (
     Channel as Channel,
+)
+from ._abc import (
     Clock as Clock,
+)
+from ._abc import (
     HalfCloseableStream as HalfCloseableStream,
+)
+from ._abc import (
     HostnameResolver as HostnameResolver,
+)
+from ._abc import (
     Instrument as Instrument,
+)
+from ._abc import (
     Listener as Listener,
+)
+from ._abc import (
     ReceiveChannel as ReceiveChannel,
+)
+from ._abc import (
     ReceiveStream as ReceiveStream,
+)
+from ._abc import (
     SendChannel as SendChannel,
+)
+from ._abc import (
     SendStream as SendStream,
+)
+from ._abc import (
     SocketFactory as SocketFactory,
+)
+from ._abc import (
     Stream as Stream,
 )

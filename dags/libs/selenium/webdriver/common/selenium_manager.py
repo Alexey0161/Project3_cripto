@@ -58,7 +58,9 @@ class SeleniumManager:
 
         if not path.is_file():
             tracker = "https://github.com/SeleniumHQ/selenium/issues"
-            raise SeleniumManagerException(f"{path} is missing.  Please open an issue on {tracker}")
+            raise SeleniumManagerException(
+                f"{path} is missing.  Please open an issue on {tracker}"
+            )
 
         return path
 
@@ -70,7 +72,9 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
-        logger.info("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
+        logger.info(
+            "Applicable driver not found; attempting to install with Selenium Manager (Beta)"
+        )
 
         browser = options.capabilities["browserName"]
 
@@ -103,13 +107,17 @@ class SeleniumManager:
         """
         command = " ".join(args)
         logger.debug(f"Executing process: {command}")
-        completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        completed_proc = subprocess.run(
+            args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
         stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
         output = json.loads(stdout)
         result = output["result"]["message"]
         if completed_proc.returncode:
-            raise SeleniumManagerException(f"Selenium Manager failed for: {command}.\n{result}{stderr}")
+            raise SeleniumManagerException(
+                f"Selenium Manager failed for: {command}.\n{result}{stderr}"
+            )
         else:
             # Selenium Manager exited successfully, return executable path and print warnings
             for item in output["logs"]:

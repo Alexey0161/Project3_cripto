@@ -5,20 +5,21 @@
 #
 # CDP domain: Overlay (experimental)
 from __future__ import annotations
-from .util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
-from . import dom
-from . import page
-from . import runtime
+from dataclasses import dataclass
+
+from . import dom, page, runtime
+from .util import T_JSON_DICT, event_class
 
 
 @dataclass
 class GridHighlightConfig:
-    '''
+    """
     Configuration data for the highlighting of Grid elements.
-    '''
+    """
+
     #: Whether the extension lines from grid cells to the rulers should be shown (default: false).
     show_grid_extension_lines: typing.Optional[bool] = None
 
@@ -55,51 +56,74 @@ class GridHighlightConfig:
     def to_json(self):
         json = dict()
         if self.show_grid_extension_lines is not None:
-            json['showGridExtensionLines'] = self.show_grid_extension_lines
+            json["showGridExtensionLines"] = self.show_grid_extension_lines
         if self.show_positive_line_numbers is not None:
-            json['showPositiveLineNumbers'] = self.show_positive_line_numbers
+            json["showPositiveLineNumbers"] = self.show_positive_line_numbers
         if self.show_negative_line_numbers is not None:
-            json['showNegativeLineNumbers'] = self.show_negative_line_numbers
+            json["showNegativeLineNumbers"] = self.show_negative_line_numbers
         if self.grid_border_color is not None:
-            json['gridBorderColor'] = self.grid_border_color.to_json()
+            json["gridBorderColor"] = self.grid_border_color.to_json()
         if self.cell_border_color is not None:
-            json['cellBorderColor'] = self.cell_border_color.to_json()
+            json["cellBorderColor"] = self.cell_border_color.to_json()
         if self.grid_border_dash is not None:
-            json['gridBorderDash'] = self.grid_border_dash
+            json["gridBorderDash"] = self.grid_border_dash
         if self.cell_border_dash is not None:
-            json['cellBorderDash'] = self.cell_border_dash
+            json["cellBorderDash"] = self.cell_border_dash
         if self.row_gap_color is not None:
-            json['rowGapColor'] = self.row_gap_color.to_json()
+            json["rowGapColor"] = self.row_gap_color.to_json()
         if self.row_hatch_color is not None:
-            json['rowHatchColor'] = self.row_hatch_color.to_json()
+            json["rowHatchColor"] = self.row_hatch_color.to_json()
         if self.column_gap_color is not None:
-            json['columnGapColor'] = self.column_gap_color.to_json()
+            json["columnGapColor"] = self.column_gap_color.to_json()
         if self.column_hatch_color is not None:
-            json['columnHatchColor'] = self.column_hatch_color.to_json()
+            json["columnHatchColor"] = self.column_hatch_color.to_json()
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            show_grid_extension_lines=bool(json['showGridExtensionLines']) if 'showGridExtensionLines' in json else None,
-            show_positive_line_numbers=bool(json['showPositiveLineNumbers']) if 'showPositiveLineNumbers' in json else None,
-            show_negative_line_numbers=bool(json['showNegativeLineNumbers']) if 'showNegativeLineNumbers' in json else None,
-            grid_border_color=dom.RGBA.from_json(json['gridBorderColor']) if 'gridBorderColor' in json else None,
-            cell_border_color=dom.RGBA.from_json(json['cellBorderColor']) if 'cellBorderColor' in json else None,
-            grid_border_dash=bool(json['gridBorderDash']) if 'gridBorderDash' in json else None,
-            cell_border_dash=bool(json['cellBorderDash']) if 'cellBorderDash' in json else None,
-            row_gap_color=dom.RGBA.from_json(json['rowGapColor']) if 'rowGapColor' in json else None,
-            row_hatch_color=dom.RGBA.from_json(json['rowHatchColor']) if 'rowHatchColor' in json else None,
-            column_gap_color=dom.RGBA.from_json(json['columnGapColor']) if 'columnGapColor' in json else None,
-            column_hatch_color=dom.RGBA.from_json(json['columnHatchColor']) if 'columnHatchColor' in json else None,
+            show_grid_extension_lines=bool(json["showGridExtensionLines"])
+            if "showGridExtensionLines" in json
+            else None,
+            show_positive_line_numbers=bool(json["showPositiveLineNumbers"])
+            if "showPositiveLineNumbers" in json
+            else None,
+            show_negative_line_numbers=bool(json["showNegativeLineNumbers"])
+            if "showNegativeLineNumbers" in json
+            else None,
+            grid_border_color=dom.RGBA.from_json(json["gridBorderColor"])
+            if "gridBorderColor" in json
+            else None,
+            cell_border_color=dom.RGBA.from_json(json["cellBorderColor"])
+            if "cellBorderColor" in json
+            else None,
+            grid_border_dash=bool(json["gridBorderDash"])
+            if "gridBorderDash" in json
+            else None,
+            cell_border_dash=bool(json["cellBorderDash"])
+            if "cellBorderDash" in json
+            else None,
+            row_gap_color=dom.RGBA.from_json(json["rowGapColor"])
+            if "rowGapColor" in json
+            else None,
+            row_hatch_color=dom.RGBA.from_json(json["rowHatchColor"])
+            if "rowHatchColor" in json
+            else None,
+            column_gap_color=dom.RGBA.from_json(json["columnGapColor"])
+            if "columnGapColor" in json
+            else None,
+            column_hatch_color=dom.RGBA.from_json(json["columnHatchColor"])
+            if "columnHatchColor" in json
+            else None,
         )
 
 
 @dataclass
 class HighlightConfig:
-    '''
+    """
     Configuration data for the highlighting of page elements.
-    '''
+    """
+
     #: Whether the node info tooltip should be shown (default: false).
     show_info: typing.Optional[bool] = None
 
@@ -148,55 +172,81 @@ class HighlightConfig:
     def to_json(self):
         json = dict()
         if self.show_info is not None:
-            json['showInfo'] = self.show_info
+            json["showInfo"] = self.show_info
         if self.show_styles is not None:
-            json['showStyles'] = self.show_styles
+            json["showStyles"] = self.show_styles
         if self.show_rulers is not None:
-            json['showRulers'] = self.show_rulers
+            json["showRulers"] = self.show_rulers
         if self.show_accessibility_info is not None:
-            json['showAccessibilityInfo'] = self.show_accessibility_info
+            json["showAccessibilityInfo"] = self.show_accessibility_info
         if self.show_extension_lines is not None:
-            json['showExtensionLines'] = self.show_extension_lines
+            json["showExtensionLines"] = self.show_extension_lines
         if self.content_color is not None:
-            json['contentColor'] = self.content_color.to_json()
+            json["contentColor"] = self.content_color.to_json()
         if self.padding_color is not None:
-            json['paddingColor'] = self.padding_color.to_json()
+            json["paddingColor"] = self.padding_color.to_json()
         if self.border_color is not None:
-            json['borderColor'] = self.border_color.to_json()
+            json["borderColor"] = self.border_color.to_json()
         if self.margin_color is not None:
-            json['marginColor'] = self.margin_color.to_json()
+            json["marginColor"] = self.margin_color.to_json()
         if self.event_target_color is not None:
-            json['eventTargetColor'] = self.event_target_color.to_json()
+            json["eventTargetColor"] = self.event_target_color.to_json()
         if self.shape_color is not None:
-            json['shapeColor'] = self.shape_color.to_json()
+            json["shapeColor"] = self.shape_color.to_json()
         if self.shape_margin_color is not None:
-            json['shapeMarginColor'] = self.shape_margin_color.to_json()
+            json["shapeMarginColor"] = self.shape_margin_color.to_json()
         if self.css_grid_color is not None:
-            json['cssGridColor'] = self.css_grid_color.to_json()
+            json["cssGridColor"] = self.css_grid_color.to_json()
         if self.color_format is not None:
-            json['colorFormat'] = self.color_format.to_json()
+            json["colorFormat"] = self.color_format.to_json()
         if self.grid_highlight_config is not None:
-            json['gridHighlightConfig'] = self.grid_highlight_config.to_json()
+            json["gridHighlightConfig"] = self.grid_highlight_config.to_json()
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            show_info=bool(json['showInfo']) if 'showInfo' in json else None,
-            show_styles=bool(json['showStyles']) if 'showStyles' in json else None,
-            show_rulers=bool(json['showRulers']) if 'showRulers' in json else None,
-            show_accessibility_info=bool(json['showAccessibilityInfo']) if 'showAccessibilityInfo' in json else None,
-            show_extension_lines=bool(json['showExtensionLines']) if 'showExtensionLines' in json else None,
-            content_color=dom.RGBA.from_json(json['contentColor']) if 'contentColor' in json else None,
-            padding_color=dom.RGBA.from_json(json['paddingColor']) if 'paddingColor' in json else None,
-            border_color=dom.RGBA.from_json(json['borderColor']) if 'borderColor' in json else None,
-            margin_color=dom.RGBA.from_json(json['marginColor']) if 'marginColor' in json else None,
-            event_target_color=dom.RGBA.from_json(json['eventTargetColor']) if 'eventTargetColor' in json else None,
-            shape_color=dom.RGBA.from_json(json['shapeColor']) if 'shapeColor' in json else None,
-            shape_margin_color=dom.RGBA.from_json(json['shapeMarginColor']) if 'shapeMarginColor' in json else None,
-            css_grid_color=dom.RGBA.from_json(json['cssGridColor']) if 'cssGridColor' in json else None,
-            color_format=ColorFormat.from_json(json['colorFormat']) if 'colorFormat' in json else None,
-            grid_highlight_config=GridHighlightConfig.from_json(json['gridHighlightConfig']) if 'gridHighlightConfig' in json else None,
+            show_info=bool(json["showInfo"]) if "showInfo" in json else None,
+            show_styles=bool(json["showStyles"]) if "showStyles" in json else None,
+            show_rulers=bool(json["showRulers"]) if "showRulers" in json else None,
+            show_accessibility_info=bool(json["showAccessibilityInfo"])
+            if "showAccessibilityInfo" in json
+            else None,
+            show_extension_lines=bool(json["showExtensionLines"])
+            if "showExtensionLines" in json
+            else None,
+            content_color=dom.RGBA.from_json(json["contentColor"])
+            if "contentColor" in json
+            else None,
+            padding_color=dom.RGBA.from_json(json["paddingColor"])
+            if "paddingColor" in json
+            else None,
+            border_color=dom.RGBA.from_json(json["borderColor"])
+            if "borderColor" in json
+            else None,
+            margin_color=dom.RGBA.from_json(json["marginColor"])
+            if "marginColor" in json
+            else None,
+            event_target_color=dom.RGBA.from_json(json["eventTargetColor"])
+            if "eventTargetColor" in json
+            else None,
+            shape_color=dom.RGBA.from_json(json["shapeColor"])
+            if "shapeColor" in json
+            else None,
+            shape_margin_color=dom.RGBA.from_json(json["shapeMarginColor"])
+            if "shapeMarginColor" in json
+            else None,
+            css_grid_color=dom.RGBA.from_json(json["cssGridColor"])
+            if "cssGridColor" in json
+            else None,
+            color_format=ColorFormat.from_json(json["colorFormat"])
+            if "colorFormat" in json
+            else None,
+            grid_highlight_config=GridHighlightConfig.from_json(
+                json["gridHighlightConfig"]
+            )
+            if "gridHighlightConfig" in json
+            else None,
         )
 
 
@@ -215,9 +265,10 @@ class ColorFormat(enum.Enum):
 
 @dataclass
 class HingeConfig:
-    '''
+    """
     Configuration for dual screen hinge
-    '''
+    """
+
     #: A rectangle represent hinge
     rect: dom.Rect
 
@@ -229,19 +280,23 @@ class HingeConfig:
 
     def to_json(self):
         json = dict()
-        json['rect'] = self.rect.to_json()
+        json["rect"] = self.rect.to_json()
         if self.content_color is not None:
-            json['contentColor'] = self.content_color.to_json()
+            json["contentColor"] = self.content_color.to_json()
         if self.outline_color is not None:
-            json['outlineColor'] = self.outline_color.to_json()
+            json["outlineColor"] = self.outline_color.to_json()
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            rect=dom.Rect.from_json(json['rect']),
-            content_color=dom.RGBA.from_json(json['contentColor']) if 'contentColor' in json else None,
-            outline_color=dom.RGBA.from_json(json['outlineColor']) if 'outlineColor' in json else None,
+            rect=dom.Rect.from_json(json["rect"]),
+            content_color=dom.RGBA.from_json(json["contentColor"])
+            if "contentColor" in json
+            else None,
+            outline_color=dom.RGBA.from_json(json["outlineColor"])
+            if "outlineColor" in json
+            else None,
         )
 
 
@@ -260,34 +315,34 @@ class InspectMode(enum.Enum):
         return cls(json)
 
 
-def disable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def disable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Disables domain notifications.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.disable',
+        "method": "Overlay.disable",
     }
     json = yield cmd_dict
 
 
-def enable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def enable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Enables domain notifications.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.enable',
+        "method": "Overlay.enable",
     }
     json = yield cmd_dict
 
 
 def get_highlight_object_for_test(
-        node_id: dom.NodeId,
-        include_distance: typing.Optional[bool] = None,
-        include_style: typing.Optional[bool] = None,
-        color_format: typing.Optional[ColorFormat] = None,
-        show_accessibility_info: typing.Optional[bool] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,dict]:
-    '''
+    node_id: dom.NodeId,
+    include_distance: typing.Optional[bool] = None,
+    include_style: typing.Optional[bool] = None,
+    color_format: typing.Optional[ColorFormat] = None,
+    show_accessibility_info: typing.Optional[bool] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, dict]:
+    """
     For testing.
 
     :param node_id: Id of the node to get highlight object for.
@@ -296,68 +351,68 @@ def get_highlight_object_for_test(
     :param color_format: *(Optional)* The color format to get config with (default: hex).
     :param show_accessibility_info: *(Optional)* Whether to show accessibility info (default: true).
     :returns: Highlight data for the node.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['nodeId'] = node_id.to_json()
+    params["nodeId"] = node_id.to_json()
     if include_distance is not None:
-        params['includeDistance'] = include_distance
+        params["includeDistance"] = include_distance
     if include_style is not None:
-        params['includeStyle'] = include_style
+        params["includeStyle"] = include_style
     if color_format is not None:
-        params['colorFormat'] = color_format.to_json()
+        params["colorFormat"] = color_format.to_json()
     if show_accessibility_info is not None:
-        params['showAccessibilityInfo'] = show_accessibility_info
+        params["showAccessibilityInfo"] = show_accessibility_info
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.getHighlightObjectForTest',
-        'params': params,
+        "method": "Overlay.getHighlightObjectForTest",
+        "params": params,
     }
     json = yield cmd_dict
-    return dict(json['highlight'])
+    return dict(json["highlight"])
 
 
-def hide_highlight() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def hide_highlight() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Hides any highlight.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.hideHighlight',
+        "method": "Overlay.hideHighlight",
     }
     json = yield cmd_dict
 
 
 def highlight_frame(
-        frame_id: page.FrameId,
-        content_color: typing.Optional[dom.RGBA] = None,
-        content_outline_color: typing.Optional[dom.RGBA] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    frame_id: page.FrameId,
+    content_color: typing.Optional[dom.RGBA] = None,
+    content_outline_color: typing.Optional[dom.RGBA] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Highlights owner element of the frame with given id.
 
     :param frame_id: Identifier of the frame to highlight.
     :param content_color: *(Optional)* The content box highlight fill color (default: transparent).
     :param content_outline_color: *(Optional)* The content box highlight outline color (default: transparent).
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
+    params["frameId"] = frame_id.to_json()
     if content_color is not None:
-        params['contentColor'] = content_color.to_json()
+        params["contentColor"] = content_color.to_json()
     if content_outline_color is not None:
-        params['contentOutlineColor'] = content_outline_color.to_json()
+        params["contentOutlineColor"] = content_outline_color.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.highlightFrame',
-        'params': params,
+        "method": "Overlay.highlightFrame",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def highlight_node(
-        highlight_config: HighlightConfig,
-        node_id: typing.Optional[dom.NodeId] = None,
-        backend_node_id: typing.Optional[dom.BackendNodeId] = None,
-        object_id: typing.Optional[runtime.RemoteObjectId] = None,
-        selector: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    highlight_config: HighlightConfig,
+    node_id: typing.Optional[dom.NodeId] = None,
+    backend_node_id: typing.Optional[dom.BackendNodeId] = None,
+    object_id: typing.Optional[runtime.RemoteObjectId] = None,
+    selector: typing.Optional[str] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or
     objectId must be specified.
 
@@ -366,58 +421,58 @@ def highlight_node(
     :param backend_node_id: *(Optional)* Identifier of the backend node to highlight.
     :param object_id: *(Optional)* JavaScript object id of the node to be highlighted.
     :param selector: *(Optional)* Selectors to highlight relevant nodes.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['highlightConfig'] = highlight_config.to_json()
+    params["highlightConfig"] = highlight_config.to_json()
     if node_id is not None:
-        params['nodeId'] = node_id.to_json()
+        params["nodeId"] = node_id.to_json()
     if backend_node_id is not None:
-        params['backendNodeId'] = backend_node_id.to_json()
+        params["backendNodeId"] = backend_node_id.to_json()
     if object_id is not None:
-        params['objectId'] = object_id.to_json()
+        params["objectId"] = object_id.to_json()
     if selector is not None:
-        params['selector'] = selector
+        params["selector"] = selector
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.highlightNode',
-        'params': params,
+        "method": "Overlay.highlightNode",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def highlight_quad(
-        quad: dom.Quad,
-        color: typing.Optional[dom.RGBA] = None,
-        outline_color: typing.Optional[dom.RGBA] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    quad: dom.Quad,
+    color: typing.Optional[dom.RGBA] = None,
+    outline_color: typing.Optional[dom.RGBA] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
 
     :param quad: Quad to highlight
     :param color: *(Optional)* The highlight fill color (default: transparent).
     :param outline_color: *(Optional)* The highlight outline color (default: transparent).
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['quad'] = quad.to_json()
+    params["quad"] = quad.to_json()
     if color is not None:
-        params['color'] = color.to_json()
+        params["color"] = color.to_json()
     if outline_color is not None:
-        params['outlineColor'] = outline_color.to_json()
+        params["outlineColor"] = outline_color.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.highlightQuad',
-        'params': params,
+        "method": "Overlay.highlightQuad",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def highlight_rect(
-        x: int,
-        y: int,
-        width: int,
-        height: int,
-        color: typing.Optional[dom.RGBA] = None,
-        outline_color: typing.Optional[dom.RGBA] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    color: typing.Optional[dom.RGBA] = None,
+    outline_color: typing.Optional[dom.RGBA] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
 
     :param x: X coordinate
@@ -426,273 +481,266 @@ def highlight_rect(
     :param height: Rectangle height
     :param color: *(Optional)* The highlight fill color (default: transparent).
     :param outline_color: *(Optional)* The highlight outline color (default: transparent).
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['x'] = x
-    params['y'] = y
-    params['width'] = width
-    params['height'] = height
+    params["x"] = x
+    params["y"] = y
+    params["width"] = width
+    params["height"] = height
     if color is not None:
-        params['color'] = color.to_json()
+        params["color"] = color.to_json()
     if outline_color is not None:
-        params['outlineColor'] = outline_color.to_json()
+        params["outlineColor"] = outline_color.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.highlightRect',
-        'params': params,
+        "method": "Overlay.highlightRect",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_inspect_mode(
-        mode: InspectMode,
-        highlight_config: typing.Optional[HighlightConfig] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    mode: InspectMode, highlight_config: typing.Optional[HighlightConfig] = None
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
     Backend then generates 'inspectNodeRequested' event upon element selection.
 
     :param mode: Set an inspection mode.
     :param highlight_config: *(Optional)* A descriptor for the highlight appearance of hovered-over nodes. May be omitted if ```enabled == false```.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['mode'] = mode.to_json()
+    params["mode"] = mode.to_json()
     if highlight_config is not None:
-        params['highlightConfig'] = highlight_config.to_json()
+        params["highlightConfig"] = highlight_config.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setInspectMode',
-        'params': params,
+        "method": "Overlay.setInspectMode",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_ad_highlights(
-        show: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    show: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Highlights owner element of all frames detected to be ads.
 
     :param show: True for showing ad highlights
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['show'] = show
+    params["show"] = show
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowAdHighlights',
-        'params': params,
+        "method": "Overlay.setShowAdHighlights",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_paused_in_debugger_message(
-        message: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    message: typing.Optional[str] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     :param message: *(Optional)* The message to display, also triggers resume and step over controls.
-    '''
+    """
     params: T_JSON_DICT = dict()
     if message is not None:
-        params['message'] = message
+        params["message"] = message
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setPausedInDebuggerMessage',
-        'params': params,
+        "method": "Overlay.setPausedInDebuggerMessage",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_debug_borders(
-        show: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    show: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Requests that backend shows debug borders on layers
 
     :param show: True for showing debug borders
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['show'] = show
+    params["show"] = show
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowDebugBorders',
-        'params': params,
+        "method": "Overlay.setShowDebugBorders",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_fps_counter(
-        show: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    show: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Requests that backend shows the FPS counter
 
     :param show: True for showing the FPS counter
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['show'] = show
+    params["show"] = show
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowFPSCounter',
-        'params': params,
+        "method": "Overlay.setShowFPSCounter",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_paint_rects(
-        result: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    result: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Requests that backend shows paint rectangles
 
     :param result: True for showing paint rectangles
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['result'] = result
+    params["result"] = result
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowPaintRects',
-        'params': params,
+        "method": "Overlay.setShowPaintRects",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_layout_shift_regions(
-        result: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    result: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Requests that backend shows layout shift regions
 
     :param result: True for showing layout shift regions
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['result'] = result
+    params["result"] = result
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowLayoutShiftRegions',
-        'params': params,
+        "method": "Overlay.setShowLayoutShiftRegions",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_scroll_bottleneck_rects(
-        show: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    show: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Requests that backend shows scroll bottleneck rects
 
     :param show: True for showing scroll bottleneck rects
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['show'] = show
+    params["show"] = show
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowScrollBottleneckRects',
-        'params': params,
+        "method": "Overlay.setShowScrollBottleneckRects",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_hit_test_borders(
-        show: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    show: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Requests that backend shows hit-test borders on layers
 
     :param show: True for showing hit-test borders
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['show'] = show
+    params["show"] = show
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowHitTestBorders',
-        'params': params,
+        "method": "Overlay.setShowHitTestBorders",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_viewport_size_on_resize(
-        show: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    show: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Paints viewport size upon main frame resize.
 
     :param show: Whether to paint size or not.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['show'] = show
+    params["show"] = show
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowViewportSizeOnResize',
-        'params': params,
+        "method": "Overlay.setShowViewportSizeOnResize",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_show_hinge(
-        hinge_config: typing.Optional[HingeConfig] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    hinge_config: typing.Optional[HingeConfig] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Add a dual screen device hinge
 
     :param hinge_config: *(Optional)* hinge data, null means hideHinge
-    '''
+    """
     params: T_JSON_DICT = dict()
     if hinge_config is not None:
-        params['hingeConfig'] = hinge_config.to_json()
+        params["hingeConfig"] = hinge_config.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Overlay.setShowHinge',
-        'params': params,
+        "method": "Overlay.setShowHinge",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-@event_class('Overlay.inspectNodeRequested')
+@event_class("Overlay.inspectNodeRequested")
 @dataclass
 class InspectNodeRequested:
-    '''
+    """
     Fired when the node should be inspected. This happens after call to ``setInspectMode`` or when
     user manually inspects an element.
-    '''
+    """
+
     #: Id of the node to inspect.
     backend_node_id: dom.BackendNodeId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> InspectNodeRequested:
-        return cls(
-            backend_node_id=dom.BackendNodeId.from_json(json['backendNodeId'])
-        )
+        return cls(backend_node_id=dom.BackendNodeId.from_json(json["backendNodeId"]))
 
 
-@event_class('Overlay.nodeHighlightRequested')
+@event_class("Overlay.nodeHighlightRequested")
 @dataclass
 class NodeHighlightRequested:
-    '''
+    """
     Fired when the node should be highlighted. This happens after call to ``setInspectMode``.
-    '''
+    """
+
     node_id: dom.NodeId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> NodeHighlightRequested:
-        return cls(
-            node_id=dom.NodeId.from_json(json['nodeId'])
-        )
+        return cls(node_id=dom.NodeId.from_json(json["nodeId"]))
 
 
-@event_class('Overlay.screenshotRequested')
+@event_class("Overlay.screenshotRequested")
 @dataclass
 class ScreenshotRequested:
-    '''
+    """
     Fired when user asks to capture screenshot of some area on the page.
-    '''
+    """
+
     #: Viewport to capture, in device independent pixels (dip).
     viewport: page.Viewport
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> ScreenshotRequested:
-        return cls(
-            viewport=page.Viewport.from_json(json['viewport'])
-        )
+        return cls(viewport=page.Viewport.from_json(json["viewport"]))
 
 
-@event_class('Overlay.inspectModeCanceled')
+@event_class("Overlay.inspectModeCanceled")
 @dataclass
 class InspectModeCanceled:
-    '''
+    """
     Fired when user cancels the inspect mode.
-    '''
-
+    """
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> InspectModeCanceled:
-        return cls(
-
-        )
+        return cls()

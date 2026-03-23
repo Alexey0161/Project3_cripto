@@ -30,18 +30,48 @@ class ChromiumRemoteConnection(RemoteConnection):
     ) -> None:
         super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
         self.browser_name = browser_name
-        self._commands["launchApp"] = ("POST", "/session/$sessionId/chromium/launch_app")
+        self._commands["launchApp"] = (
+            "POST",
+            "/session/$sessionId/chromium/launch_app",
+        )
         self._commands["setPermissions"] = ("POST", "/session/$sessionId/permissions")
-        self._commands["setNetworkConditions"] = ("POST", "/session/$sessionId/chromium/network_conditions")
-        self._commands["getNetworkConditions"] = ("GET", "/session/$sessionId/chromium/network_conditions")
-        self._commands["deleteNetworkConditions"] = ("DELETE", "/session/$sessionId/chromium/network_conditions")
-        self._commands["executeCdpCommand"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cdp/execute")
-        self._commands["getSinks"] = ("GET", f"/session/$sessionId/{vendor_prefix}/cast/get_sinks")
-        self._commands["getIssueMessage"] = ("GET", f"/session/$sessionId/{vendor_prefix}/cast/get_issue_message")
-        self._commands["setSinkToUse"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/set_sink_to_use")
+        self._commands["setNetworkConditions"] = (
+            "POST",
+            "/session/$sessionId/chromium/network_conditions",
+        )
+        self._commands["getNetworkConditions"] = (
+            "GET",
+            "/session/$sessionId/chromium/network_conditions",
+        )
+        self._commands["deleteNetworkConditions"] = (
+            "DELETE",
+            "/session/$sessionId/chromium/network_conditions",
+        )
+        self._commands["executeCdpCommand"] = (
+            "POST",
+            f"/session/$sessionId/{vendor_prefix}/cdp/execute",
+        )
+        self._commands["getSinks"] = (
+            "GET",
+            f"/session/$sessionId/{vendor_prefix}/cast/get_sinks",
+        )
+        self._commands["getIssueMessage"] = (
+            "GET",
+            f"/session/$sessionId/{vendor_prefix}/cast/get_issue_message",
+        )
+        self._commands["setSinkToUse"] = (
+            "POST",
+            f"/session/$sessionId/{vendor_prefix}/cast/set_sink_to_use",
+        )
         self._commands["startDesktopMirroring"] = (
             "POST",
             f"/session/$sessionId/{vendor_prefix}/cast/start_desktop_mirroring",
         )
-        self._commands["startTabMirroring"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/start_tab_mirroring")
-        self._commands["stopCasting"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/stop_casting")
+        self._commands["startTabMirroring"] = (
+            "POST",
+            f"/session/$sessionId/{vendor_prefix}/cast/start_tab_mirroring",
+        )
+        self._commands["stopCasting"] = (
+            "POST",
+            f"/session/$sessionId/{vendor_prefix}/cast/stop_casting",
+        )

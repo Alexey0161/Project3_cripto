@@ -17,7 +17,6 @@
 
 """The ApplicationCache implementation."""
 
-
 import warnings
 
 from selenium.webdriver.remote.command import Command

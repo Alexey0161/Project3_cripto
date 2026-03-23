@@ -37,7 +37,9 @@ class DriverFinder:
     @staticmethod
     def get_path(service: Service, options: BaseOptions) -> str:
         try:
-            path = shutil.which(service.path) or SeleniumManager().driver_location(options)
+            path = shutil.which(service.path) or SeleniumManager().driver_location(
+                options
+            )
         except WebDriverException as err:
             logger.warning("Unable to obtain driver using Selenium Manager: " + err.msg)
             raise err

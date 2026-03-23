@@ -70,7 +70,9 @@ def import_devtools(ver):
         return devtools
 
 
-_connection_context: contextvars.ContextVar = contextvars.ContextVar("connection_context")
+_connection_context: contextvars.ContextVar = contextvars.ContextVar(
+    "connection_context"
+)
 _session_context: contextvars.ContextVar = contextvars.ContextVar("session_context")
 
 
@@ -128,7 +130,9 @@ def set_global_connection(connection):
     certain use cases such as running inside Jupyter notebook.
     """
     global _connection_context
-    _connection_context = contextvars.ContextVar("_connection_context", default=connection)
+    _connection_context = contextvars.ContextVar(
+        "_connection_context", default=connection
+    )
 
 
 def set_global_session(session):
@@ -230,7 +234,9 @@ class CdpBase:
         return receiver
 
     @asynccontextmanager
-    async def wait_for(self, event_type: typing.Type[T], buffer_size=10) -> typing.AsyncGenerator[CmEventProxy, None]:
+    async def wait_for(
+        self, event_type: typing.Type[T], buffer_size=10
+    ) -> typing.AsyncGenerator[CmEventProxy, None]:
         """Wait for an event of the given type and return it.
 
         This is an async context manager, so you should open it inside
@@ -265,7 +271,9 @@ class CdpBase:
         try:
             cmd, event = self.inflight_cmd.pop(cmd_id)
         except KeyError:
-            logger.warning(f"Got a message with a command ID that does not exist: {data}")
+            logger.warning(
+                f"Got a message with a command ID that does not exist: {data}"
+            )
             return
         if "error" in data:
             # If the server reported an error, convert it to an exception and do
@@ -276,7 +284,9 @@ class CdpBase:
             # into a CDP object.
             try:
                 response = cmd.send(data["result"])
-                raise InternalError("The command's generator function " "did not exit when expected!")
+                raise InternalError(
+                    "The command's generator function did not exit when expected!"
+                )
             except StopIteration as exit:
                 return_ = exit.value
             self.inflight_result[cmd_id] = return_
@@ -295,7 +305,9 @@ class CdpBase:
             try:
                 sender.send_nowait(event)
             except trio.WouldBlock:
-                logger.error('Unable to send event "%r" due to full channel %s', event, sender)
+                logger.error(
+                    'Unable to send event "%r" due to full channel %s', event, sender
+                )
             except trio.BrokenResourceError:
                 to_remove.add(sender)
         if to_remove:
@@ -414,7 +426,9 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         """Returns a new :class:`CdpSession` connected to the specified
         target."""
         global devtools
-        session_id = await self.execute(devtools.target.attach_to_target(target_id, True))
+        session_id = await self.execute(
+            devtools.target.attach_to_target(target_id, True)
+        )
         session = CdpSession(self.ws, session_id, target_id)
         self.sessions[session_id] = session
         return session
@@ -435,14 +449,22 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
             try:
                 data = json.loads(message)
             except json.JSONDecodeError:
-                raise BrowserError({"code": -32700, "message": "Client received invalid JSON", "data": message})
+                raise BrowserError(
+                    {
+                        "code": -32700,
+                        "message": "Client received invalid JSON",
+                        "data": message,
+                    }
+                )
             logger.debug("Received message %r", data)
             if "sessionId" in data:
                 session_id = devtools.target.SessionID(data["sessionId"])
                 try:
                     session = self.sessions[session_id]
                 except KeyError:
-                    raise BrowserError(f"Browser sent a message for an invalid session: {session_id!r}")
+                    raise BrowserError(
+                        f"Browser sent a message for an invalid session: {session_id!r}"
+                    )
                 session._handle_data(data)
             else:
                 self._handle_data(data)

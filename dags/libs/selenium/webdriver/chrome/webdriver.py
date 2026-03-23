@@ -21,8 +21,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.driver_finder import DriverFinder
 
 from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
@@ -64,14 +63,22 @@ class WebDriver(ChromiumDriver):
         """
         if executable_path != "chromedriver":
             warnings.warn(
-                "executable_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "executable_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         if chrome_options:
-            warnings.warn("use options instead of chrome_options", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "use options instead of chrome_options",
+                DeprecationWarning,
+                stacklevel=2,
+            )
             options = chrome_options
         if keep_alive != DEFAULT_KEEP_ALIVE:
             warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "keep_alive has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         else:
             keep_alive = True

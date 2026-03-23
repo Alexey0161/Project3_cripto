@@ -190,4 +190,6 @@ if "sphinx" in sys.modules:  # pragma: no cover
     import inspect
 
     for c in (fail_at, fail_after):
-        c.__signature__ = inspect.Signature.from_callable(c).replace(return_annotation=trio.CancelScope)  # type: ignore[union-attr]
+        c.__signature__ = inspect.Signature.from_callable(c).replace(
+            return_annotation=trio.CancelScope
+        )  # type: ignore[union-attr]

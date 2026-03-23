@@ -1,5 +1,4 @@
-"""Trio - A friendly Python library for async concurrency and I/O
-"""
+"""Trio - A friendly Python library for async concurrency and I/O"""
 
 from __future__ import annotations
 
@@ -26,40 +25,83 @@ from ._core import TASK_STATUS_IGNORED as TASK_STATUS_IGNORED  # isort: split
 from . import abc, from_thread, lowlevel, socket, to_thread
 from ._channel import (
     MemoryChannelStatistics as MemoryChannelStatistics,
+)
+from ._channel import (
     MemoryReceiveChannel as MemoryReceiveChannel,
+)
+from ._channel import (
     MemorySendChannel as MemorySendChannel,
+)
+from ._channel import (
     open_memory_channel as open_memory_channel,
 )
 from ._core import (
     BrokenResourceError as BrokenResourceError,
+)
+from ._core import (
     BusyResourceError as BusyResourceError,
+)
+from ._core import (
     Cancelled as Cancelled,
+)
+from ._core import (
     CancelScope as CancelScope,
+)
+from ._core import (
     ClosedResourceError as ClosedResourceError,
+)
+from ._core import (
     EndOfChannel as EndOfChannel,
+)
+from ._core import (
     Nursery as Nursery,
+)
+from ._core import (
     RunFinishedError as RunFinishedError,
+)
+from ._core import (
     TaskStatus as TaskStatus,
+)
+from ._core import (
     TrioInternalError as TrioInternalError,
+)
+from ._core import (
     WouldBlock as WouldBlock,
+)
+from ._core import (
     current_effective_deadline as current_effective_deadline,
+)
+from ._core import (
     current_time as current_time,
+)
+from ._core import (
     open_nursery as open_nursery,
+)
+from ._core import (
     run as run,
 )
 from ._deprecate import TrioDeprecationWarning as TrioDeprecationWarning
 from ._dtls import (
     DTLSChannel as DTLSChannel,
+)
+from ._dtls import (
     DTLSChannelStatistics as DTLSChannelStatistics,
+)
+from ._dtls import (
     DTLSEndpoint as DTLSEndpoint,
 )
-from ._file_io import open_file as open_file, wrap_file as wrap_file
+from ._file_io import open_file as open_file
+from ._file_io import wrap_file as wrap_file
 from ._highlevel_generic import (
     StapledStream as StapledStream,
+)
+from ._highlevel_generic import (
     aclose_forcefully as aclose_forcefully,
 )
 from ._highlevel_open_tcp_listeners import (
     open_tcp_listeners as open_tcp_listeners,
+)
+from ._highlevel_open_tcp_listeners import (
     serve_tcp as serve_tcp,
 )
 from ._highlevel_open_tcp_stream import open_tcp_stream as open_tcp_stream
@@ -67,41 +109,86 @@ from ._highlevel_open_unix_stream import open_unix_socket as open_unix_socket
 from ._highlevel_serve_listeners import serve_listeners as serve_listeners
 from ._highlevel_socket import (
     SocketListener as SocketListener,
+)
+from ._highlevel_socket import (
     SocketStream as SocketStream,
 )
 from ._highlevel_ssl_helpers import (
     open_ssl_over_tcp_listeners as open_ssl_over_tcp_listeners,
+)
+from ._highlevel_ssl_helpers import (
     open_ssl_over_tcp_stream as open_ssl_over_tcp_stream,
+)
+from ._highlevel_ssl_helpers import (
     serve_ssl_over_tcp as serve_ssl_over_tcp,
 )
-from ._path import Path as Path, PosixPath as PosixPath, WindowsPath as WindowsPath
+from ._path import Path as Path
+from ._path import PosixPath as PosixPath
+from ._path import WindowsPath as WindowsPath
 from ._signals import open_signal_receiver as open_signal_receiver
 from ._ssl import (
     NeedHandshakeError as NeedHandshakeError,
+)
+from ._ssl import (
     SSLListener as SSLListener,
+)
+from ._ssl import (
     SSLStream as SSLStream,
 )
-from ._subprocess import Process as Process, run_process as run_process
+from ._subprocess import Process as Process
+from ._subprocess import run_process as run_process
 from ._sync import (
     CapacityLimiter as CapacityLimiter,
+)
+from ._sync import (
     CapacityLimiterStatistics as CapacityLimiterStatistics,
+)
+from ._sync import (
     Condition as Condition,
+)
+from ._sync import (
     ConditionStatistics as ConditionStatistics,
+)
+from ._sync import (
     Event as Event,
+)
+from ._sync import (
     EventStatistics as EventStatistics,
+)
+from ._sync import (
     Lock as Lock,
+)
+from ._sync import (
     LockStatistics as LockStatistics,
+)
+from ._sync import (
     Semaphore as Semaphore,
+)
+from ._sync import (
     StrictFIFOLock as StrictFIFOLock,
 )
 from ._timeouts import (
     TooSlowError as TooSlowError,
+)
+from ._timeouts import (
     fail_after as fail_after,
+)
+from ._timeouts import (
     fail_at as fail_at,
+)
+from ._timeouts import (
     move_on_after as move_on_after,
+)
+from ._timeouts import (
     move_on_at as move_on_at,
+)
+from ._timeouts import (
     sleep as sleep,
+)
+from ._timeouts import (
     sleep_forever as sleep_forever,
+)
+from ._timeouts import (
     sleep_until as sleep_until,
 )
 

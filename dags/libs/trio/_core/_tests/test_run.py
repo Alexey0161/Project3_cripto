@@ -1224,8 +1224,10 @@ async def test_exception_chaining_after_throw_to_inner() -> None:
         Matcher(
             ValueError,
             "^Unique Text$",
-            lambda e: isinstance(e.__context__, IndexError)
-            and isinstance(e.__context__.__context__, KeyError),
+            lambda e: (
+                isinstance(e.__context__, IndexError)
+                and isinstance(e.__context__.__context__, KeyError)
+            ),
         ),
     ):
         async with _core.open_nursery() as nursery:
@@ -2505,9 +2507,12 @@ async def test_cancel_scope_exit_doesnt_create_cyclic_garbage() -> None:
 
     old_flags = gc.get_debug()
     try:
-        with RaisesGroup(
-            Matcher(ValueError, "^this is a crash$"),
-        ), _core.CancelScope() as outer:
+        with (
+            RaisesGroup(
+                Matcher(ValueError, "^this is a crash$"),
+            ),
+            _core.CancelScope() as outer,
+        ):
             async with _core.open_nursery() as nursery:
                 gc.collect()
                 gc.set_debug(gc.DEBUG_SAVEALL)

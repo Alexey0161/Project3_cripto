@@ -16,8 +16,7 @@
 # under the License.
 
 import os
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import Optional
 
 from selenium.types import AnyKey

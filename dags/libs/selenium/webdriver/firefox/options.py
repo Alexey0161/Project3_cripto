@@ -85,7 +85,11 @@ class Options(ArgOptions):
         :Returns: The Firefox profile to use.
         """
         if self._profile:
-            warnings.warn("Getting a profile has been deprecated.", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "Getting a profile has been deprecated.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         return self._profile
 
     @profile.setter
@@ -121,14 +125,21 @@ class Options(ArgOptions):
           value: boolean value indicating to set the headless option
         """
         warnings.warn(
-            "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
+            "headless property is deprecated, instead use add_argument('-headless')",
+            DeprecationWarning,
+            stacklevel=2,
         )
         if value:
             self._arguments.append("-headless")
         elif "-headless" in self._arguments:
             self._arguments.remove("-headless")
 
-    def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
+    def enable_mobile(
+        self,
+        android_package: str = "org.mozilla.firefox",
+        android_activity=None,
+        device_serial=None,
+    ):
         super().enable_mobile(android_package, android_activity, device_serial)
 
     def to_capabilities(self) -> dict:

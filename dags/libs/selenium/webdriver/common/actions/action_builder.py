@@ -15,8 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
-from typing import Union
+from typing import List, Union
 
 from selenium.webdriver.remote.command import Command
 
@@ -30,7 +29,9 @@ from .wheel_input import WheelInput
 
 
 class ActionBuilder:
-    def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
+    def __init__(
+        self, driver, mouse=None, wheel=None, keyboard=None, duration=250
+    ) -> None:
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
         if not keyboard:

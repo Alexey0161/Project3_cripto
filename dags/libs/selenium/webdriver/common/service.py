@@ -19,11 +19,9 @@ import logging
 import os
 import subprocess
 import typing
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from platform import system
-from subprocess import DEVNULL
-from subprocess import PIPE
+from subprocess import DEVNULL, PIPE
 from time import sleep
 from urllib import request
 from urllib.error import URLError
@@ -61,7 +59,11 @@ class Service(ABC):
     ) -> None:
         self._path = executable
         self.port = port or utils.free_port()
-        self.log_file = open(os.devnull, "wb") if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL else log_file
+        self.log_file = (
+            open(os.devnull, "wb")
+            if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL
+            else log_file
+        )
         self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.popen_kw = kwargs.pop("popen_kw", {})
@@ -110,7 +112,9 @@ class Service(ABC):
         """Check if the underlying process is still running."""
         return_code = self.process.poll()
         if return_code:
-            raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
+            raise WebDriverException(
+                f"Service {self._path} unexpectedly exited. Status code was: {return_code}"
+            )
 
     def is_connectable(self) -> bool:
         """Establishes a socket connection to determine if the service running
@@ -132,7 +136,9 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
+        if self.log_file != PIPE and not (
+            self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL
+        ):
             try:
                 # Todo: Be explicit in what we are catching here.
                 if hasattr(self.log_file, "close"):
@@ -156,7 +162,11 @@ class Service(ABC):
         silently ignores errors here.
         """
         try:
-            stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
+            stdin, stdout, stderr = (
+                self.process.stdin,
+                self.process.stdout,
+                self.process.stderr,
+            )
             for stream in stdin, stdout, stderr:
                 try:
                     stream.close()  # type: ignore
@@ -204,7 +214,9 @@ class Service(ABC):
                 creationflags=self.creation_flags,
                 **self.popen_kw,
             )
-            logger.debug(f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}")
+            logger.debug(
+                f"Started executable: `{self._path}` in a child process with pid: {self.process.pid}"
+            )
         except TypeError:
             raise
         except OSError as err:

@@ -18,9 +18,7 @@
 import base64
 import os
 import warnings
-from typing import BinaryIO
-from typing import List
-from typing import Union
+from typing import BinaryIO, List, Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -125,7 +123,9 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> None:
+    def add_experimental_option(
+        self, name: str, value: Union[str, int, dict, List[str]]
+    ) -> None:
         """Adds an experimental option which is passed to chromium.
 
         :Args:
@@ -133,7 +133,12 @@ class ChromiumOptions(ArgOptions):
           value: The option value.
         """
         if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."), stacklevel=2)
+            warnings.warn(
+                UserWarning(
+                    "Manipulating `w3c` setting can have unintended consequences."
+                ),
+                stacklevel=2,
+            )
         self._experimental_options[name] = value
 
     @property
@@ -179,7 +184,9 @@ class ChromiumOptions(ArgOptions):
         if "w3c" in chrome_options:
             if chrome_options["w3c"]:
                 warnings.warn(
-                    "Setting 'w3c: True' is redundant and will no longer be allowed", DeprecationWarning, stacklevel=2
+                    "Setting 'w3c: True' is redundant and will no longer be allowed",
+                    DeprecationWarning,
+                    stacklevel=2,
                 )
             else:
                 raise AttributeError(

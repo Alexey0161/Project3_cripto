@@ -16,6 +16,7 @@
 # under the License.
 
 """The ActionChains implementation,"""
+
 import warnings
 
 from selenium.webdriver.remote.webelement import WebElement
@@ -322,7 +323,9 @@ class ActionChains:
         self.w3c_actions.wheel_action.scroll(delta_x=delta_x, delta_y=delta_y)
         return self
 
-    def scroll_from_origin(self, scroll_origin: ScrollOrigin, delta_x: int, delta_y: int):
+    def scroll_from_origin(
+        self, scroll_origin: ScrollOrigin, delta_x: int, delta_y: int
+    ):
         """Scrolls by provided amount based on a provided origin. The scroll
         origin is either the center of an element or the upper left of the
         viewport plus any offsets. If the origin is an element, and the element
@@ -339,7 +342,9 @@ class ActionChains:
         """
 
         if not isinstance(scroll_origin, ScrollOrigin):
-            raise TypeError(f"Expected object of type ScrollOrigin, got: {type(scroll_origin)}")
+            raise TypeError(
+                f"Expected object of type ScrollOrigin, got: {type(scroll_origin)}"
+            )
 
         self.w3c_actions.wheel_action.scroll(
             origin=scroll_origin.origin,
@@ -350,7 +355,15 @@ class ActionChains:
         )
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"):
+    def scroll(
+        self,
+        x: int,
+        y: int,
+        delta_x: int,
+        delta_y: int,
+        duration: int = 0,
+        origin: str = "viewport",
+    ):
         """Sends wheel scroll information to the browser to be processed.
 
         :Args:

@@ -5,17 +5,19 @@
 #
 # CDP domain: Preload (experimental)
 from __future__ import annotations
-from .util import event_class, T_JSON_DICT
-from dataclasses import dataclass
-import enum
+
 import typing
+from dataclasses import dataclass
+
 from . import network
+from .util import T_JSON_DICT, event_class
 
 
 class RuleSetId(str):
-    '''
+    """
     Unique id
-    '''
+    """
+
     def to_json(self) -> str:
         return self
 
@@ -24,14 +26,15 @@ class RuleSetId(str):
         return cls(json)
 
     def __repr__(self):
-        return 'RuleSetId({})'.format(super().__repr__())
+        return "RuleSetId({})".format(super().__repr__())
 
 
 @dataclass
 class RuleSet:
-    '''
+    """
     Corresponds to SpeculationRuleSet
-    '''
+    """
+
     id_: RuleSetId
 
     #: Identifies a document which the rule set is associated with.
@@ -40,7 +43,7 @@ class RuleSet:
     #: Source text of JSON representing the rule set. If it comes from
     #: ``script`` tag, it is the textContent of the node. Note that it is
     #: a JSON for valid case.
-    #: 
+    #:
     #: See also:
     #: - https://wicg.github.io/nav-speculation/speculation-rules.html
     #: - https://github.com/WICG/nav-speculation/blob/main/triggers.md
@@ -48,58 +51,55 @@ class RuleSet:
 
     def to_json(self):
         json = dict()
-        json['id'] = self.id_.to_json()
-        json['loaderId'] = self.loader_id.to_json()
-        json['sourceText'] = self.source_text
+        json["id"] = self.id_.to_json()
+        json["loaderId"] = self.loader_id.to_json()
+        json["sourceText"] = self.source_text
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            id_=RuleSetId.from_json(json['id']),
-            loader_id=network.LoaderId.from_json(json['loaderId']),
-            source_text=str(json['sourceText']),
+            id_=RuleSetId.from_json(json["id"]),
+            loader_id=network.LoaderId.from_json(json["loaderId"]),
+            source_text=str(json["sourceText"]),
         )
 
 
-def enable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
+def enable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
 
     cmd_dict: T_JSON_DICT = {
-        'method': 'Preload.enable',
+        "method": "Preload.enable",
     }
     json = yield cmd_dict
 
 
-def disable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
+def disable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
 
     cmd_dict: T_JSON_DICT = {
-        'method': 'Preload.disable',
+        "method": "Preload.disable",
     }
     json = yield cmd_dict
 
 
-@event_class('Preload.ruleSetUpdated')
+@event_class("Preload.ruleSetUpdated")
 @dataclass
 class RuleSetUpdated:
-    '''
+    """
     Upsert. Currently, it is only emitted when a rule set added.
-    '''
+    """
+
     rule_set: RuleSet
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> RuleSetUpdated:
-        return cls(
-            rule_set=RuleSet.from_json(json['ruleSet'])
-        )
+        return cls(rule_set=RuleSet.from_json(json["ruleSet"]))
 
 
-@event_class('Preload.ruleSetRemoved')
+@event_class("Preload.ruleSetRemoved")
 @dataclass
 class RuleSetRemoved:
     id_: RuleSetId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> RuleSetRemoved:
-        return cls(
-            id_=RuleSetId.from_json(json['id'])
-        )
+        return cls(id_=RuleSetId.from_json(json["id"]))

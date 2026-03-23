@@ -1,8 +1,8 @@
 import sqlite3
 
-# conn = sqlite3.connect("scraper_data_v1.db")
-conn = sqlite3.connect("C:/Users/ivano/Desktop/Project3_CryptoScraper/dags/logic/scraper_data_v1.db")
-# conn = sqlite3.connect("C:/Users/ivano/Desktop/Project3_CryptoScraper/src_2/logic/scraper_data_v1.db")
+conn = sqlite3.connect(
+    "C:/Users/ivano/Desktop/Project3_CryptoScraper/dags/logic/scraper_data_v1.db"
+)
 
 cursor = conn.cursor()
 

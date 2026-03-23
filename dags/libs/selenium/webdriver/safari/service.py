@@ -47,7 +47,11 @@ class Service(service.Service):
         self._check_executable(executable_path)
         self.service_args = service_args or []
         self.quiet = quiet
-        log_file = subprocess.PIPE if not self.quiet else open(os.devnull, "w", encoding="utf-8")
+        log_file = (
+            subprocess.PIPE
+            if not self.quiet
+            else open(os.devnull, "w", encoding="utf-8")
+        )
         super().__init__(
             executable=executable_path,
             port=port,

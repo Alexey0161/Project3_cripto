@@ -5,18 +5,20 @@
 #
 # CDP domain: ApplicationCache (experimental)
 from __future__ import annotations
-from .util import event_class, T_JSON_DICT
-from dataclasses import dataclass
-import enum
+
 import typing
+from dataclasses import dataclass
+
 from . import page
+from .util import T_JSON_DICT, event_class
 
 
 @dataclass
 class ApplicationCacheResource:
-    '''
+    """
     Detailed application cache resource information.
-    '''
+    """
+
     #: Resource url.
     url: str
 
@@ -28,25 +30,26 @@ class ApplicationCacheResource:
 
     def to_json(self):
         json = dict()
-        json['url'] = self.url
-        json['size'] = self.size
-        json['type'] = self.type_
+        json["url"] = self.url
+        json["size"] = self.size
+        json["type"] = self.type_
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            url=str(json['url']),
-            size=int(json['size']),
-            type_=str(json['type']),
+            url=str(json["url"]),
+            size=int(json["size"]),
+            type_=str(json["type"]),
         )
 
 
 @dataclass
 class ApplicationCache:
-    '''
+    """
     Detailed application cache information.
-    '''
+    """
+
     #: Manifest URL.
     manifest_url: str
 
@@ -64,29 +67,32 @@ class ApplicationCache:
 
     def to_json(self):
         json = dict()
-        json['manifestURL'] = self.manifest_url
-        json['size'] = self.size
-        json['creationTime'] = self.creation_time
-        json['updateTime'] = self.update_time
-        json['resources'] = [i.to_json() for i in self.resources]
+        json["manifestURL"] = self.manifest_url
+        json["size"] = self.size
+        json["creationTime"] = self.creation_time
+        json["updateTime"] = self.update_time
+        json["resources"] = [i.to_json() for i in self.resources]
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            manifest_url=str(json['manifestURL']),
-            size=float(json['size']),
-            creation_time=float(json['creationTime']),
-            update_time=float(json['updateTime']),
-            resources=[ApplicationCacheResource.from_json(i) for i in json['resources']],
+            manifest_url=str(json["manifestURL"]),
+            size=float(json["size"]),
+            creation_time=float(json["creationTime"]),
+            update_time=float(json["updateTime"]),
+            resources=[
+                ApplicationCacheResource.from_json(i) for i in json["resources"]
+            ],
         )
 
 
 @dataclass
 class FrameWithManifest:
-    '''
+    """
     Frame identifier - manifest URL pair.
-    '''
+    """
+
     #: Frame identifier.
     frame_id: page.FrameId
 
@@ -98,83 +104,85 @@ class FrameWithManifest:
 
     def to_json(self):
         json = dict()
-        json['frameId'] = self.frame_id.to_json()
-        json['manifestURL'] = self.manifest_url
-        json['status'] = self.status
+        json["frameId"] = self.frame_id.to_json()
+        json["manifestURL"] = self.manifest_url
+        json["status"] = self.status
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            frame_id=page.FrameId.from_json(json['frameId']),
-            manifest_url=str(json['manifestURL']),
-            status=int(json['status']),
+            frame_id=page.FrameId.from_json(json["frameId"]),
+            manifest_url=str(json["manifestURL"]),
+            status=int(json["status"]),
         )
 
 
-def enable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def enable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Enables application cache domain notifications.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'ApplicationCache.enable',
+        "method": "ApplicationCache.enable",
     }
     json = yield cmd_dict
 
 
 def get_application_cache_for_frame(
-        frame_id: page.FrameId
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,ApplicationCache]:
-    '''
+    frame_id: page.FrameId,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, ApplicationCache]:
+    """
     Returns relevant application cache data for the document in given frame.
 
     :param frame_id: Identifier of the frame containing document whose application cache is retrieved.
     :returns: Relevant application cache data for the document in given frame.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
+    params["frameId"] = frame_id.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'ApplicationCache.getApplicationCacheForFrame',
-        'params': params,
+        "method": "ApplicationCache.getApplicationCacheForFrame",
+        "params": params,
     }
     json = yield cmd_dict
-    return ApplicationCache.from_json(json['applicationCache'])
+    return ApplicationCache.from_json(json["applicationCache"])
 
 
-def get_frames_with_manifests() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.List[FrameWithManifest]]:
-    '''
+def get_frames_with_manifests() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.List[FrameWithManifest]
+]:
+    """
     Returns array of frame identifiers with manifest urls for each frame containing a document
     associated with some application cache.
 
     :returns: Array of frame identifiers with manifest urls for each frame containing a document associated with some application cache.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'ApplicationCache.getFramesWithManifests',
+        "method": "ApplicationCache.getFramesWithManifests",
     }
     json = yield cmd_dict
-    return [FrameWithManifest.from_json(i) for i in json['frameIds']]
+    return [FrameWithManifest.from_json(i) for i in json["frameIds"]]
 
 
 def get_manifest_for_frame(
-        frame_id: page.FrameId
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,str]:
-    '''
+    frame_id: page.FrameId,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, str]:
+    """
     Returns manifest URL for document in the given frame.
 
     :param frame_id: Identifier of the frame containing document whose manifest is retrieved.
     :returns: Manifest URL for document in the given frame.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
+    params["frameId"] = frame_id.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'ApplicationCache.getManifestForFrame',
-        'params': params,
+        "method": "ApplicationCache.getManifestForFrame",
+        "params": params,
     }
     json = yield cmd_dict
-    return str(json['manifestURL'])
+    return str(json["manifestURL"])
 
 
-@event_class('ApplicationCache.applicationCacheStatusUpdated')
+@event_class("ApplicationCache.applicationCacheStatusUpdated")
 @dataclass
 class ApplicationCacheStatusUpdated:
     #: Identifier of the frame containing document whose application cache updated status.
@@ -187,19 +195,17 @@ class ApplicationCacheStatusUpdated:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> ApplicationCacheStatusUpdated:
         return cls(
-            frame_id=page.FrameId.from_json(json['frameId']),
-            manifest_url=str(json['manifestURL']),
-            status=int(json['status'])
+            frame_id=page.FrameId.from_json(json["frameId"]),
+            manifest_url=str(json["manifestURL"]),
+            status=int(json["status"]),
         )
 
 
-@event_class('ApplicationCache.networkStateUpdated')
+@event_class("ApplicationCache.networkStateUpdated")
 @dataclass
 class NetworkStateUpdated:
     is_now_online: bool
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> NetworkStateUpdated:
-        return cls(
-            is_now_online=bool(json['isNowOnline'])
-        )
+        return cls(is_now_online=bool(json["isNowOnline"]))

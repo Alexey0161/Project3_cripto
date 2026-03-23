@@ -17,18 +17,14 @@
 
 
 import sys
-from typing import TYPE_CHECKING
-from typing import List
-from typing import Optional
+from typing import TYPE_CHECKING, List, Optional
 
 # necessary to support types for Python 3.7
 if TYPE_CHECKING:
     if sys.version_info >= (3, 8):
-        from typing import Literal
-        from typing import TypedDict
+        from typing import Literal, TypedDict
     else:
-        from typing_extensions import Literal
-        from typing_extensions import TypedDict
+        from typing_extensions import Literal, TypedDict
 
     Orientation = Literal["portrait", "landscape"]
 
@@ -52,8 +48,7 @@ if TYPE_CHECKING:
         pageRanges: List[str]
 
 else:
-    from typing import Any
-    from typing import Dict
+    from typing import Any, Dict
 
     Orientation = str
     _MarginOpts = _PageOpts = _PrintOpts = Dict[str, Any]
@@ -88,7 +83,9 @@ class PrintOptions:
          - value: Either portrait or landscape
         """
         if value not in self.ORIENTATION_VALUES:
-            raise ValueError(f"Orientation value must be one of {self.ORIENTATION_VALUES}")
+            raise ValueError(
+                f"Orientation value must be one of {self.ORIENTATION_VALUES}"
+            )
 
         self._print_options["orientation"] = value
 

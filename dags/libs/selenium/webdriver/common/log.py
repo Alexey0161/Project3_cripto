@@ -45,7 +45,9 @@ class Log:
         self.cdp = bidi_session.cdp
         self.devtools = bidi_session.devtools
         _pkg = ".".join(__name__.split(".")[:-1])
-        self._mutation_listener_js = pkgutil.get_data(_pkg, "mutation-listener.js").decode("utf8").strip()
+        self._mutation_listener_js = (
+            pkgutil.get_data(_pkg, "mutation-listener.js").decode("utf8").strip()
+        )
 
     @asynccontextmanager
     async def mutation_events(self) -> dict:
@@ -69,10 +71,14 @@ class Log:
         await page.execute(self.devtools.page.enable())
         runtime = self.cdp.get_session_context("runtime.enable")
         await runtime.execute(self.devtools.runtime.enable())
-        await runtime.execute(self.devtools.runtime.add_binding("__webdriver_attribute"))
+        await runtime.execute(
+            self.devtools.runtime.add_binding("__webdriver_attribute")
+        )
         self.driver.pin_script(self._mutation_listener_js)
         script_key = await page.execute(
-            self.devtools.page.add_script_to_evaluate_on_new_document(self._mutation_listener_js)
+            self.devtools.page.add_script_to_evaluate_on_new_document(
+                self._mutation_listener_js
+            )
         )
         self.driver.pin_script(self._mutation_listener_js, script_key)
         self.driver.execute_script(f"return {self._mutation_listener_js}")
@@ -81,7 +87,9 @@ class Log:
             yield event
 
         payload = json.loads(evnt.value.payload)
-        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}")
+        elements: list = self.driver.find_elements(
+            By.CSS_SELECTOR, f"*[data-__webdriver_id={payload['target']}"
+        )
         if not elements:
             elements.append(None)
         event["element"] = elements[0]

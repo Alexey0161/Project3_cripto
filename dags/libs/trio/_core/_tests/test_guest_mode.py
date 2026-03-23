@@ -223,7 +223,8 @@ def test_host_altering_deadlines_wakes_trio_up() -> None:
 
 
 def test_guest_mode_sniffio_integration() -> None:
-    from sniffio import current_async_library, thread_local as sniffio_library
+    from sniffio import current_async_library
+    from sniffio import thread_local as sniffio_library
 
     async def trio_main(in_host: InHost) -> str:
         async def synchronize() -> None:

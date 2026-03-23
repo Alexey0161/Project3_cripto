@@ -66,7 +66,11 @@ class ChromiumDriver(RemoteWebDriver):
                 stacklevel=2,
             )
         if port != DEFAULT_PORT:
-            warnings.warn("port has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "port has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         self.port = port
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn(
@@ -76,7 +80,9 @@ class ChromiumDriver(RemoteWebDriver):
             )
         if keep_alive != DEFAULT_KEEP_ALIVE and type(self) == __class__:
             warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "keep_alive has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         else:
             keep_alive = True
@@ -183,7 +189,9 @@ class ChromiumDriver(RemoteWebDriver):
             For example to getResponseBody:
             {'base64Encoded': False, 'body': 'response body string'}
         """
-        return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
+        return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})[
+            "value"
+        ]
 
     def get_sinks(self) -> list:
         """

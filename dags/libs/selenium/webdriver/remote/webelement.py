@@ -21,14 +21,12 @@ import pkgutil
 import warnings
 import zipfile
 from abc import ABCMeta
-from base64 import b64decode
-from base64 import encodebytes
+from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
 from typing import List
 
-from selenium.common.exceptions import JavascriptException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import JavascriptException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
@@ -110,7 +108,9 @@ class WebElement(BaseWebElement):
         try:
             self._parent.execute_script(script, self)
         except JavascriptException:
-            raise WebDriverException("To submit an element, it must be nested inside a form element")
+            raise WebDriverException(
+                "To submit an element, it must be nested inside a form element"
+            )
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element."""
@@ -131,7 +131,9 @@ class WebElement(BaseWebElement):
             return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
         except WebDriverException:
             # if we hit an end point that doesn't understand getElementProperty lets fake it
-            return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
+            return self.parent.execute_script(
+                "return arguments[0][arguments[1]]", self, name
+            )
 
     def get_dom_attribute(self, name) -> str:
         """Gets the given attribute of the element. Unlike
@@ -176,7 +178,9 @@ class WebElement(BaseWebElement):
         if getAttribute_js is None:
             _load_js()
         attribute_value = self.parent.execute_script(
-            f"/* getAttribute */return ({getAttribute_js}).apply(null, arguments);", self, name
+            f"/* getAttribute */return ({getAttribute_js}).apply(null, arguments);",
+            self,
+            name,
         )
         return attribute_value
 
@@ -218,7 +222,9 @@ class WebElement(BaseWebElement):
         if self.parent._is_remote:
             local_files = list(
                 map(
-                    lambda keys_to_send: self.parent.file_detector.is_local_file(str(keys_to_send)),
+                    lambda keys_to_send: self.parent.file_detector.is_local_file(
+                        str(keys_to_send)
+                    ),
                     "".join(map(str, value)).split("\n"),
                 )
             )
@@ -229,7 +235,8 @@ class WebElement(BaseWebElement):
                 value = "\n".join(remote_files)
 
         self._execute(
-            Command.SEND_KEYS_TO_ELEMENT, {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)}
+            Command.SEND_KEYS_TO_ELEMENT,
+            {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)},
         )
 
     @property
@@ -243,12 +250,12 @@ class WebElement(BaseWebElement):
           - NoSuchShadowRoot - if no shadow root was attached to element
         """
         browser_main_version = int(self._parent.caps["browserVersion"].split(".")[0])
-        assert (
-            self._parent.caps["browserName"].lower() != "safari"
-        ), "This only currently works in Firefox and Chromium based browsers"
-        assert (
-            browser_main_version > 95
-        ), f"Please use Firefox or Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
+        assert self._parent.caps["browserName"].lower() != "safari", (
+            "This only currently works in Firefox and Chromium based browsers"
+        )
+        assert browser_main_version > 95, (
+            f"Please use Firefox or Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
+        )
         return self._execute(Command.GET_SHADOW_ROOT)["value"]
 
     # RenderedWebElement Items
@@ -257,7 +264,9 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+        return self.parent.execute_script(
+            f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self
+        )
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
@@ -286,7 +295,9 @@ class WebElement(BaseWebElement):
 
     def value_of_css_property(self, property_name) -> str:
         """The value of a CSS property."""
-        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {"propertyName": property_name})["value"]
+        return self._execute(
+            Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {"propertyName": property_name}
+        )["value"]
 
     @property
     def location(self) -> dict:
@@ -349,7 +360,8 @@ class WebElement(BaseWebElement):
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file "
+                "type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.screenshot_as_png
@@ -422,7 +434,9 @@ class WebElement(BaseWebElement):
             by = By.CSS_SELECTOR
             value = f'[name="{value}"]'
 
-        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
+        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})[
+            "value"
+        ]
 
     def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
         """Find elements given a By strategy and locator.
@@ -444,7 +458,9 @@ class WebElement(BaseWebElement):
             by = By.CSS_SELECTOR
             value = f'[name="{value}"]'
 
-        return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
+        return self._execute(
+            Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value}
+        )["value"]
 
     def __hash__(self) -> int:
         return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)

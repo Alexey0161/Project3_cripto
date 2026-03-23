@@ -24,8 +24,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
 from .remote_connection import SafariRemoteConnection
-from .service import DEFAULT_EXECUTABLE_PATH
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 
 DEFAULT_SAFARI_CAPS = DesiredCapabilities.SAFARI.copy()
 
@@ -61,7 +60,9 @@ class WebDriver(RemoteWebDriver):
         """
         if port:
             warnings.warn(
-                "port has been deprecated, please set it via the service class", DeprecationWarning, stacklevel=2
+                "port has been deprecated, please set it via the service class",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
         if executable_path != DEFAULT_EXECUTABLE_PATH:
@@ -84,7 +85,9 @@ class WebDriver(RemoteWebDriver):
             )
         if quiet:
             warnings.warn(
-                "quiet has been deprecated, please use the Service class to set it", DeprecationWarning, stacklevel=2
+                "quiet has been deprecated, please use the Service class to set it",
+                DeprecationWarning,
+                stacklevel=2,
             )
         if not keep_alive:
             warnings.warn(
@@ -101,11 +104,15 @@ class WebDriver(RemoteWebDriver):
             )
 
         self._reuse_service = reuse_service
-        self.service = service or Service(executable_path, port=port, quiet=quiet, service_args=service_args)
+        self.service = service or Service(
+            executable_path, port=port, quiet=quiet, service_args=service_args
+        )
         if not reuse_service:
             self.service.start()
 
-        executor = SafariRemoteConnection(remote_server_addr=self.service.service_url, keep_alive=keep_alive)
+        executor = SafariRemoteConnection(
+            remote_server_addr=self.service.service_url, keep_alive=keep_alive
+        )
 
         super().__init__(command_executor=executor, options=options)
 
@@ -128,7 +135,9 @@ class WebDriver(RemoteWebDriver):
     # First available in Safari 11.1 and Safari Technology Preview 41.
     def set_permission(self, permission, value):
         if not isinstance(value, bool):
-            raise WebDriverException("Value of a session permission must be set to True or False.")
+            raise WebDriverException(
+                "Value of a session permission must be set to True or False."
+            )
 
         payload = {permission: value}
         self.execute("SET_PERMISSIONS", {"permissions": payload})

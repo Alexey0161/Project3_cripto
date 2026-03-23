@@ -5,22 +5,20 @@
 #
 # CDP domain: Page
 from __future__ import annotations
-from .util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
-from . import debugger
-from . import dom
-from . import emulation
-from . import io
-from . import network
-from . import runtime
+from dataclasses import dataclass
+
+from . import debugger, dom, emulation, io, network, runtime
+from .util import T_JSON_DICT, event_class
 
 
 class FrameId(str):
-    '''
+    """
     Unique frame identifier.
-    '''
+    """
+
     def to_json(self) -> str:
         return self
 
@@ -29,14 +27,15 @@ class FrameId(str):
         return cls(json)
 
     def __repr__(self):
-        return 'FrameId({})'.format(super().__repr__())
+        return "FrameId({})".format(super().__repr__())
 
 
 @dataclass
 class Frame:
-    '''
+    """
     Information about the Frame on the page.
-    '''
+    """
+
     #: Frame unique identifier.
     id_: FrameId
 
@@ -66,41 +65,44 @@ class Frame:
 
     def to_json(self):
         json = dict()
-        json['id'] = self.id_.to_json()
-        json['loaderId'] = self.loader_id.to_json()
-        json['url'] = self.url
-        json['securityOrigin'] = self.security_origin
-        json['mimeType'] = self.mime_type
+        json["id"] = self.id_.to_json()
+        json["loaderId"] = self.loader_id.to_json()
+        json["url"] = self.url
+        json["securityOrigin"] = self.security_origin
+        json["mimeType"] = self.mime_type
         if self.parent_id is not None:
-            json['parentId'] = self.parent_id
+            json["parentId"] = self.parent_id
         if self.name is not None:
-            json['name'] = self.name
+            json["name"] = self.name
         if self.url_fragment is not None:
-            json['urlFragment'] = self.url_fragment
+            json["urlFragment"] = self.url_fragment
         if self.unreachable_url is not None:
-            json['unreachableUrl'] = self.unreachable_url
+            json["unreachableUrl"] = self.unreachable_url
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            id_=FrameId.from_json(json['id']),
-            loader_id=network.LoaderId.from_json(json['loaderId']),
-            url=str(json['url']),
-            security_origin=str(json['securityOrigin']),
-            mime_type=str(json['mimeType']),
-            parent_id=str(json['parentId']) if 'parentId' in json else None,
-            name=str(json['name']) if 'name' in json else None,
-            url_fragment=str(json['urlFragment']) if 'urlFragment' in json else None,
-            unreachable_url=str(json['unreachableUrl']) if 'unreachableUrl' in json else None,
+            id_=FrameId.from_json(json["id"]),
+            loader_id=network.LoaderId.from_json(json["loaderId"]),
+            url=str(json["url"]),
+            security_origin=str(json["securityOrigin"]),
+            mime_type=str(json["mimeType"]),
+            parent_id=str(json["parentId"]) if "parentId" in json else None,
+            name=str(json["name"]) if "name" in json else None,
+            url_fragment=str(json["urlFragment"]) if "urlFragment" in json else None,
+            unreachable_url=str(json["unreachableUrl"])
+            if "unreachableUrl" in json
+            else None,
         )
 
 
 @dataclass
 class FrameResource:
-    '''
+    """
     Information about the Resource on the page.
-    '''
+    """
+
     #: Resource URL.
     url: str
 
@@ -124,37 +126,40 @@ class FrameResource:
 
     def to_json(self):
         json = dict()
-        json['url'] = self.url
-        json['type'] = self.type_.to_json()
-        json['mimeType'] = self.mime_type
+        json["url"] = self.url
+        json["type"] = self.type_.to_json()
+        json["mimeType"] = self.mime_type
         if self.last_modified is not None:
-            json['lastModified'] = self.last_modified.to_json()
+            json["lastModified"] = self.last_modified.to_json()
         if self.content_size is not None:
-            json['contentSize'] = self.content_size
+            json["contentSize"] = self.content_size
         if self.failed is not None:
-            json['failed'] = self.failed
+            json["failed"] = self.failed
         if self.canceled is not None:
-            json['canceled'] = self.canceled
+            json["canceled"] = self.canceled
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            url=str(json['url']),
-            type_=network.ResourceType.from_json(json['type']),
-            mime_type=str(json['mimeType']),
-            last_modified=network.TimeSinceEpoch.from_json(json['lastModified']) if 'lastModified' in json else None,
-            content_size=float(json['contentSize']) if 'contentSize' in json else None,
-            failed=bool(json['failed']) if 'failed' in json else None,
-            canceled=bool(json['canceled']) if 'canceled' in json else None,
+            url=str(json["url"]),
+            type_=network.ResourceType.from_json(json["type"]),
+            mime_type=str(json["mimeType"]),
+            last_modified=network.TimeSinceEpoch.from_json(json["lastModified"])
+            if "lastModified" in json
+            else None,
+            content_size=float(json["contentSize"]) if "contentSize" in json else None,
+            failed=bool(json["failed"]) if "failed" in json else None,
+            canceled=bool(json["canceled"]) if "canceled" in json else None,
         )
 
 
 @dataclass
 class FrameResourceTree:
-    '''
+    """
     Information about the Frame hierarchy along with their cached resources.
-    '''
+    """
+
     #: Frame information for this tree item.
     frame: Frame
 
@@ -166,26 +171,29 @@ class FrameResourceTree:
 
     def to_json(self):
         json = dict()
-        json['frame'] = self.frame.to_json()
-        json['resources'] = [i.to_json() for i in self.resources]
+        json["frame"] = self.frame.to_json()
+        json["resources"] = [i.to_json() for i in self.resources]
         if self.child_frames is not None:
-            json['childFrames'] = [i.to_json() for i in self.child_frames]
+            json["childFrames"] = [i.to_json() for i in self.child_frames]
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            frame=Frame.from_json(json['frame']),
-            resources=[FrameResource.from_json(i) for i in json['resources']],
-            child_frames=[FrameResourceTree.from_json(i) for i in json['childFrames']] if 'childFrames' in json else None,
+            frame=Frame.from_json(json["frame"]),
+            resources=[FrameResource.from_json(i) for i in json["resources"]],
+            child_frames=[FrameResourceTree.from_json(i) for i in json["childFrames"]]
+            if "childFrames" in json
+            else None,
         )
 
 
 @dataclass
 class FrameTree:
-    '''
+    """
     Information about the Frame hierarchy.
-    '''
+    """
+
     #: Frame information for this tree item.
     frame: Frame
 
@@ -194,23 +202,26 @@ class FrameTree:
 
     def to_json(self):
         json = dict()
-        json['frame'] = self.frame.to_json()
+        json["frame"] = self.frame.to_json()
         if self.child_frames is not None:
-            json['childFrames'] = [i.to_json() for i in self.child_frames]
+            json["childFrames"] = [i.to_json() for i in self.child_frames]
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            frame=Frame.from_json(json['frame']),
-            child_frames=[FrameTree.from_json(i) for i in json['childFrames']] if 'childFrames' in json else None,
+            frame=Frame.from_json(json["frame"]),
+            child_frames=[FrameTree.from_json(i) for i in json["childFrames"]]
+            if "childFrames" in json
+            else None,
         )
 
 
 class ScriptIdentifier(str):
-    '''
+    """
     Unique script identifier.
-    '''
+    """
+
     def to_json(self) -> str:
         return self
 
@@ -219,13 +230,14 @@ class ScriptIdentifier(str):
         return cls(json)
 
     def __repr__(self):
-        return 'ScriptIdentifier({})'.format(super().__repr__())
+        return "ScriptIdentifier({})".format(super().__repr__())
 
 
 class TransitionType(enum.Enum):
-    '''
+    """
     Transition type.
-    '''
+    """
+
     LINK = "link"
     TYPED = "typed"
     ADDRESS_BAR = "address_bar"
@@ -250,9 +262,10 @@ class TransitionType(enum.Enum):
 
 @dataclass
 class NavigationEntry:
-    '''
+    """
     Navigation history entry.
-    '''
+    """
+
     #: Unique id of the navigation history entry.
     id_: int
 
@@ -270,29 +283,30 @@ class NavigationEntry:
 
     def to_json(self):
         json = dict()
-        json['id'] = self.id_
-        json['url'] = self.url
-        json['userTypedURL'] = self.user_typed_url
-        json['title'] = self.title
-        json['transitionType'] = self.transition_type.to_json()
+        json["id"] = self.id_
+        json["url"] = self.url
+        json["userTypedURL"] = self.user_typed_url
+        json["title"] = self.title
+        json["transitionType"] = self.transition_type.to_json()
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            id_=int(json['id']),
-            url=str(json['url']),
-            user_typed_url=str(json['userTypedURL']),
-            title=str(json['title']),
-            transition_type=TransitionType.from_json(json['transitionType']),
+            id_=int(json["id"]),
+            url=str(json["url"]),
+            user_typed_url=str(json["userTypedURL"]),
+            title=str(json["title"]),
+            transition_type=TransitionType.from_json(json["transitionType"]),
         )
 
 
 @dataclass
 class ScreencastFrameMetadata:
-    '''
+    """
     Screencast frame metadata.
-    '''
+    """
+
     #: Top offset in DIP.
     offset_top: float
 
@@ -316,33 +330,36 @@ class ScreencastFrameMetadata:
 
     def to_json(self):
         json = dict()
-        json['offsetTop'] = self.offset_top
-        json['pageScaleFactor'] = self.page_scale_factor
-        json['deviceWidth'] = self.device_width
-        json['deviceHeight'] = self.device_height
-        json['scrollOffsetX'] = self.scroll_offset_x
-        json['scrollOffsetY'] = self.scroll_offset_y
+        json["offsetTop"] = self.offset_top
+        json["pageScaleFactor"] = self.page_scale_factor
+        json["deviceWidth"] = self.device_width
+        json["deviceHeight"] = self.device_height
+        json["scrollOffsetX"] = self.scroll_offset_x
+        json["scrollOffsetY"] = self.scroll_offset_y
         if self.timestamp is not None:
-            json['timestamp'] = self.timestamp.to_json()
+            json["timestamp"] = self.timestamp.to_json()
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            offset_top=float(json['offsetTop']),
-            page_scale_factor=float(json['pageScaleFactor']),
-            device_width=float(json['deviceWidth']),
-            device_height=float(json['deviceHeight']),
-            scroll_offset_x=float(json['scrollOffsetX']),
-            scroll_offset_y=float(json['scrollOffsetY']),
-            timestamp=network.TimeSinceEpoch.from_json(json['timestamp']) if 'timestamp' in json else None,
+            offset_top=float(json["offsetTop"]),
+            page_scale_factor=float(json["pageScaleFactor"]),
+            device_width=float(json["deviceWidth"]),
+            device_height=float(json["deviceHeight"]),
+            scroll_offset_x=float(json["scrollOffsetX"]),
+            scroll_offset_y=float(json["scrollOffsetY"]),
+            timestamp=network.TimeSinceEpoch.from_json(json["timestamp"])
+            if "timestamp" in json
+            else None,
         )
 
 
 class DialogType(enum.Enum):
-    '''
+    """
     Javascript dialog type.
-    '''
+    """
+
     ALERT = "alert"
     CONFIRM = "confirm"
     PROMPT = "prompt"
@@ -358,9 +375,10 @@ class DialogType(enum.Enum):
 
 @dataclass
 class AppManifestError:
-    '''
+    """
     Error while paring app manifest.
-    '''
+    """
+
     #: Error message.
     message: str
 
@@ -375,47 +393,49 @@ class AppManifestError:
 
     def to_json(self):
         json = dict()
-        json['message'] = self.message
-        json['critical'] = self.critical
-        json['line'] = self.line
-        json['column'] = self.column
+        json["message"] = self.message
+        json["critical"] = self.critical
+        json["line"] = self.line
+        json["column"] = self.column
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            message=str(json['message']),
-            critical=int(json['critical']),
-            line=int(json['line']),
-            column=int(json['column']),
+            message=str(json["message"]),
+            critical=int(json["critical"]),
+            line=int(json["line"]),
+            column=int(json["column"]),
         )
 
 
 @dataclass
 class AppManifestParsedProperties:
-    '''
+    """
     Parsed app manifest properties.
-    '''
+    """
+
     #: Computed scope value
     scope: str
 
     def to_json(self):
         json = dict()
-        json['scope'] = self.scope
+        json["scope"] = self.scope
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            scope=str(json['scope']),
+            scope=str(json["scope"]),
         )
 
 
 @dataclass
 class LayoutViewport:
-    '''
+    """
     Layout viewport position and dimensions.
-    '''
+    """
+
     #: Horizontal offset relative to the document (CSS pixels).
     page_x: int
 
@@ -430,27 +450,28 @@ class LayoutViewport:
 
     def to_json(self):
         json = dict()
-        json['pageX'] = self.page_x
-        json['pageY'] = self.page_y
-        json['clientWidth'] = self.client_width
-        json['clientHeight'] = self.client_height
+        json["pageX"] = self.page_x
+        json["pageY"] = self.page_y
+        json["clientWidth"] = self.client_width
+        json["clientHeight"] = self.client_height
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            page_x=int(json['pageX']),
-            page_y=int(json['pageY']),
-            client_width=int(json['clientWidth']),
-            client_height=int(json['clientHeight']),
+            page_x=int(json["pageX"]),
+            page_y=int(json["pageY"]),
+            client_width=int(json["clientWidth"]),
+            client_height=int(json["clientHeight"]),
         )
 
 
 @dataclass
 class VisualViewport:
-    '''
+    """
     Visual viewport position, dimensions, and scale.
-    '''
+    """
+
     #: Horizontal offset relative to the layout viewport (CSS pixels).
     offset_x: float
 
@@ -477,36 +498,37 @@ class VisualViewport:
 
     def to_json(self):
         json = dict()
-        json['offsetX'] = self.offset_x
-        json['offsetY'] = self.offset_y
-        json['pageX'] = self.page_x
-        json['pageY'] = self.page_y
-        json['clientWidth'] = self.client_width
-        json['clientHeight'] = self.client_height
-        json['scale'] = self.scale
+        json["offsetX"] = self.offset_x
+        json["offsetY"] = self.offset_y
+        json["pageX"] = self.page_x
+        json["pageY"] = self.page_y
+        json["clientWidth"] = self.client_width
+        json["clientHeight"] = self.client_height
+        json["scale"] = self.scale
         if self.zoom is not None:
-            json['zoom'] = self.zoom
+            json["zoom"] = self.zoom
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            offset_x=float(json['offsetX']),
-            offset_y=float(json['offsetY']),
-            page_x=float(json['pageX']),
-            page_y=float(json['pageY']),
-            client_width=float(json['clientWidth']),
-            client_height=float(json['clientHeight']),
-            scale=float(json['scale']),
-            zoom=float(json['zoom']) if 'zoom' in json else None,
+            offset_x=float(json["offsetX"]),
+            offset_y=float(json["offsetY"]),
+            page_x=float(json["pageX"]),
+            page_y=float(json["pageY"]),
+            client_width=float(json["clientWidth"]),
+            client_height=float(json["clientHeight"]),
+            scale=float(json["scale"]),
+            zoom=float(json["zoom"]) if "zoom" in json else None,
         )
 
 
 @dataclass
 class Viewport:
-    '''
+    """
     Viewport for capturing screenshot.
-    '''
+    """
+
     #: X offset in device independent pixels (dip).
     x: float
 
@@ -524,29 +546,30 @@ class Viewport:
 
     def to_json(self):
         json = dict()
-        json['x'] = self.x
-        json['y'] = self.y
-        json['width'] = self.width
-        json['height'] = self.height
-        json['scale'] = self.scale
+        json["x"] = self.x
+        json["y"] = self.y
+        json["width"] = self.width
+        json["height"] = self.height
+        json["scale"] = self.scale
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            x=float(json['x']),
-            y=float(json['y']),
-            width=float(json['width']),
-            height=float(json['height']),
-            scale=float(json['scale']),
+            x=float(json["x"]),
+            y=float(json["y"]),
+            width=float(json["width"]),
+            height=float(json["height"]),
+            scale=float(json["scale"]),
         )
 
 
 @dataclass
 class FontFamilies:
-    '''
+    """
     Generic font families collection.
-    '''
+    """
+
     #: The standard font-family.
     standard: typing.Optional[str] = None
 
@@ -571,39 +594,40 @@ class FontFamilies:
     def to_json(self):
         json = dict()
         if self.standard is not None:
-            json['standard'] = self.standard
+            json["standard"] = self.standard
         if self.fixed is not None:
-            json['fixed'] = self.fixed
+            json["fixed"] = self.fixed
         if self.serif is not None:
-            json['serif'] = self.serif
+            json["serif"] = self.serif
         if self.sans_serif is not None:
-            json['sansSerif'] = self.sans_serif
+            json["sansSerif"] = self.sans_serif
         if self.cursive is not None:
-            json['cursive'] = self.cursive
+            json["cursive"] = self.cursive
         if self.fantasy is not None:
-            json['fantasy'] = self.fantasy
+            json["fantasy"] = self.fantasy
         if self.pictograph is not None:
-            json['pictograph'] = self.pictograph
+            json["pictograph"] = self.pictograph
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            standard=str(json['standard']) if 'standard' in json else None,
-            fixed=str(json['fixed']) if 'fixed' in json else None,
-            serif=str(json['serif']) if 'serif' in json else None,
-            sans_serif=str(json['sansSerif']) if 'sansSerif' in json else None,
-            cursive=str(json['cursive']) if 'cursive' in json else None,
-            fantasy=str(json['fantasy']) if 'fantasy' in json else None,
-            pictograph=str(json['pictograph']) if 'pictograph' in json else None,
+            standard=str(json["standard"]) if "standard" in json else None,
+            fixed=str(json["fixed"]) if "fixed" in json else None,
+            serif=str(json["serif"]) if "serif" in json else None,
+            sans_serif=str(json["sansSerif"]) if "sansSerif" in json else None,
+            cursive=str(json["cursive"]) if "cursive" in json else None,
+            fantasy=str(json["fantasy"]) if "fantasy" in json else None,
+            pictograph=str(json["pictograph"]) if "pictograph" in json else None,
         )
 
 
 @dataclass
 class FontSizes:
-    '''
+    """
     Default font sizes.
-    '''
+    """
+
     #: Default standard font size.
     standard: typing.Optional[int] = None
 
@@ -613,16 +637,16 @@ class FontSizes:
     def to_json(self):
         json = dict()
         if self.standard is not None:
-            json['standard'] = self.standard
+            json["standard"] = self.standard
         if self.fixed is not None:
-            json['fixed'] = self.fixed
+            json["fixed"] = self.fixed
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            standard=int(json['standard']) if 'standard' in json else None,
-            fixed=int(json['fixed']) if 'fixed' in json else None,
+            standard=int(json["standard"]) if "standard" in json else None,
+            fixed=int(json["fixed"]) if "fixed" in json else None,
         )
 
 
@@ -668,23 +692,24 @@ class InstallabilityErrorArgument:
 
     def to_json(self):
         json = dict()
-        json['name'] = self.name
-        json['value'] = self.value
+        json["name"] = self.name
+        json["value"] = self.value
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            name=str(json['name']),
-            value=str(json['value']),
+            name=str(json["name"]),
+            value=str(json["value"]),
         )
 
 
 @dataclass
 class InstallabilityError:
-    '''
+    """
     The installability error
-    '''
+    """
+
     #: The error id (e.g. 'manifest-missing-suitable-icon').
     error_id: str
 
@@ -693,22 +718,25 @@ class InstallabilityError:
 
     def to_json(self):
         json = dict()
-        json['errorId'] = self.error_id
-        json['errorArguments'] = [i.to_json() for i in self.error_arguments]
+        json["errorId"] = self.error_id
+        json["errorArguments"] = [i.to_json() for i in self.error_arguments]
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            error_id=str(json['errorId']),
-            error_arguments=[InstallabilityErrorArgument.from_json(i) for i in json['errorArguments']],
+            error_id=str(json["errorId"]),
+            error_arguments=[
+                InstallabilityErrorArgument.from_json(i) for i in json["errorArguments"]
+            ],
         )
 
 
 class ReferrerPolicy(enum.Enum):
-    '''
+    """
     The referring-policy used for the navigation.
-    '''
+    """
+
     NO_REFERRER = "noReferrer"
     NO_REFERRER_WHEN_DOWNGRADE = "noReferrerWhenDowngrade"
     ORIGIN = "origin"
@@ -727,66 +755,65 @@ class ReferrerPolicy(enum.Enum):
 
 
 def add_script_to_evaluate_on_load(
-        script_source: str
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,ScriptIdentifier]:
-    '''
+    script_source: str,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, ScriptIdentifier]:
+    """
     Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 
     **EXPERIMENTAL**
 
     :param script_source:
     :returns: Identifier of the added script.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['scriptSource'] = script_source
+    params["scriptSource"] = script_source
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.addScriptToEvaluateOnLoad',
-        'params': params,
+        "method": "Page.addScriptToEvaluateOnLoad",
+        "params": params,
     }
     json = yield cmd_dict
-    return ScriptIdentifier.from_json(json['identifier'])
+    return ScriptIdentifier.from_json(json["identifier"])
 
 
 def add_script_to_evaluate_on_new_document(
-        source: str,
-        world_name: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,ScriptIdentifier]:
-    '''
+    source: str, world_name: typing.Optional[str] = None
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, ScriptIdentifier]:
+    """
     Evaluates given script in every frame upon creation (before loading frame's scripts).
 
     :param source:
     :param world_name: **(EXPERIMENTAL)** *(Optional)* If specified, creates an isolated world with the given name and evaluates given script in it. This world name will be used as the ExecutionContextDescription::name when the corresponding event is emitted.
     :returns: Identifier of the added script.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['source'] = source
+    params["source"] = source
     if world_name is not None:
-        params['worldName'] = world_name
+        params["worldName"] = world_name
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.addScriptToEvaluateOnNewDocument',
-        'params': params,
+        "method": "Page.addScriptToEvaluateOnNewDocument",
+        "params": params,
     }
     json = yield cmd_dict
-    return ScriptIdentifier.from_json(json['identifier'])
+    return ScriptIdentifier.from_json(json["identifier"])
 
 
-def bring_to_front() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def bring_to_front() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Brings page to front (activates tab).
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.bringToFront',
+        "method": "Page.bringToFront",
     }
     json = yield cmd_dict
 
 
 def capture_screenshot(
-        format_: typing.Optional[str] = None,
-        quality: typing.Optional[int] = None,
-        clip: typing.Optional[Viewport] = None,
-        from_surface: typing.Optional[bool] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,str]:
-    '''
+    format_: typing.Optional[str] = None,
+    quality: typing.Optional[int] = None,
+    clip: typing.Optional[Viewport] = None,
+    from_surface: typing.Optional[bool] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, str]:
+    """
     Capture page screenshot.
 
     :param format_: *(Optional)* Image compression format (defaults to png).
@@ -794,28 +821,28 @@ def capture_screenshot(
     :param clip: *(Optional)* Capture the screenshot of a given region only.
     :param from_surface: **(EXPERIMENTAL)** *(Optional)* Capture the screenshot from the surface, rather than the view. Defaults to true.
     :returns: Base64-encoded image data.
-    '''
+    """
     params: T_JSON_DICT = dict()
     if format_ is not None:
-        params['format'] = format_
+        params["format"] = format_
     if quality is not None:
-        params['quality'] = quality
+        params["quality"] = quality
     if clip is not None:
-        params['clip'] = clip.to_json()
+        params["clip"] = clip.to_json()
     if from_surface is not None:
-        params['fromSurface'] = from_surface
+        params["fromSurface"] = from_surface
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.captureScreenshot',
-        'params': params,
+        "method": "Page.captureScreenshot",
+        "params": params,
     }
     json = yield cmd_dict
-    return str(json['data'])
+    return str(json["data"])
 
 
 def capture_snapshot(
-        format_: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,str]:
-    '''
+    format_: typing.Optional[str] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, str]:
+    """
     Returns a snapshot of the page as a string. For MHTML format, the serialization includes
     iframes, shadow DOM, external resources, and element-inline styles.
 
@@ -823,205 +850,225 @@ def capture_snapshot(
 
     :param format_: *(Optional)* Format (defaults to mhtml).
     :returns: Serialized page data.
-    '''
+    """
     params: T_JSON_DICT = dict()
     if format_ is not None:
-        params['format'] = format_
+        params["format"] = format_
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.captureSnapshot',
-        'params': params,
+        "method": "Page.captureSnapshot",
+        "params": params,
     }
     json = yield cmd_dict
-    return str(json['data'])
+    return str(json["data"])
 
 
-def clear_device_metrics_override() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def clear_device_metrics_override() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Clears the overridden device metrics.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.clearDeviceMetricsOverride',
+        "method": "Page.clearDeviceMetricsOverride",
     }
     json = yield cmd_dict
 
 
-def clear_device_orientation_override() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def clear_device_orientation_override() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, None
+]:
+    """
     Clears the overridden Device Orientation.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.clearDeviceOrientationOverride',
+        "method": "Page.clearDeviceOrientationOverride",
     }
     json = yield cmd_dict
 
 
-def clear_geolocation_override() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def clear_geolocation_override() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Clears the overridden Geolocation Position and Error.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.clearGeolocationOverride',
+        "method": "Page.clearGeolocationOverride",
     }
     json = yield cmd_dict
 
 
 def create_isolated_world(
-        frame_id: FrameId,
-        world_name: typing.Optional[str] = None,
-        grant_univeral_access: typing.Optional[bool] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,runtime.ExecutionContextId]:
-    '''
+    frame_id: FrameId,
+    world_name: typing.Optional[str] = None,
+    grant_univeral_access: typing.Optional[bool] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, runtime.ExecutionContextId]:
+    """
     Creates an isolated world for the given frame.
 
     :param frame_id: Id of the frame in which the isolated world should be created.
     :param world_name: *(Optional)* An optional name which is reported in the Execution Context.
     :param grant_univeral_access: *(Optional)* Whether or not universal access should be granted to the isolated world. This is a powerful option, use with caution.
     :returns: Execution context of the isolated world.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
+    params["frameId"] = frame_id.to_json()
     if world_name is not None:
-        params['worldName'] = world_name
+        params["worldName"] = world_name
     if grant_univeral_access is not None:
-        params['grantUniveralAccess'] = grant_univeral_access
+        params["grantUniveralAccess"] = grant_univeral_access
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.createIsolatedWorld',
-        'params': params,
+        "method": "Page.createIsolatedWorld",
+        "params": params,
     }
     json = yield cmd_dict
-    return runtime.ExecutionContextId.from_json(json['executionContextId'])
+    return runtime.ExecutionContextId.from_json(json["executionContextId"])
 
 
 def delete_cookie(
-        cookie_name: str,
-        url: str
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    cookie_name: str, url: str
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Deletes browser cookie with given name, domain and path.
 
     **EXPERIMENTAL**
 
     :param cookie_name: Name of the cookie to remove.
     :param url: URL to match cooke domain and path.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['cookieName'] = cookie_name
-    params['url'] = url
+    params["cookieName"] = cookie_name
+    params["url"] = url
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.deleteCookie',
-        'params': params,
+        "method": "Page.deleteCookie",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-def disable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def disable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Disables page domain notifications.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.disable',
+        "method": "Page.disable",
     }
     json = yield cmd_dict
 
 
-def enable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def enable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Enables page domain notifications.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.enable',
+        "method": "Page.enable",
     }
     json = yield cmd_dict
 
 
-def get_app_manifest() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tuple[str, typing.List[AppManifestError], typing.Optional[str], typing.Optional[AppManifestParsedProperties]]]:
-    '''
+def get_app_manifest() -> typing.Generator[
+    T_JSON_DICT,
+    T_JSON_DICT,
+    typing.Tuple[
+        str,
+        typing.List[AppManifestError],
+        typing.Optional[str],
+        typing.Optional[AppManifestParsedProperties],
+    ],
+]:
+    """
 
 
     :returns: A tuple with the following items:
 
         0. **url** - Manifest location.
-        1. **errors** - 
+        1. **errors** -
         2. **data** - *(Optional)* Manifest content.
         3. **parsed** - *(Optional)* Parsed manifest properties
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getAppManifest',
+        "method": "Page.getAppManifest",
     }
     json = yield cmd_dict
     return (
-        str(json['url']),
-        [AppManifestError.from_json(i) for i in json['errors']],
-        str(json['data']) if 'data' in json else None,
-        AppManifestParsedProperties.from_json(json['parsed']) if 'parsed' in json else None
+        str(json["url"]),
+        [AppManifestError.from_json(i) for i in json["errors"]],
+        str(json["data"]) if "data" in json else None,
+        AppManifestParsedProperties.from_json(json["parsed"])
+        if "parsed" in json
+        else None,
     )
 
 
-def get_installability_errors() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.List[InstallabilityError]]:
-    '''
+def get_installability_errors() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.List[InstallabilityError]
+]:
+    """
 
 
     **EXPERIMENTAL**
 
-    :returns: 
-    '''
+    :returns:
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getInstallabilityErrors',
+        "method": "Page.getInstallabilityErrors",
     }
     json = yield cmd_dict
-    return [InstallabilityError.from_json(i) for i in json['installabilityErrors']]
+    return [InstallabilityError.from_json(i) for i in json["installabilityErrors"]]
 
 
-def get_manifest_icons() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Optional[str]]:
-    '''
+def get_manifest_icons() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.Optional[str]
+]:
+    """
 
 
     **EXPERIMENTAL**
 
-    :returns: 
-    '''
+    :returns:
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getManifestIcons',
+        "method": "Page.getManifestIcons",
     }
     json = yield cmd_dict
-    return str(json['primaryIcon']) if 'primaryIcon' in json else None
+    return str(json["primaryIcon"]) if "primaryIcon" in json else None
 
 
-def get_cookies() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.List[network.Cookie]]:
-    '''
+def get_cookies() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.List[network.Cookie]
+]:
+    """
     Returns all browser cookies. Depending on the backend support, will return detailed cookie
     information in the ``cookies`` field.
 
     **EXPERIMENTAL**
 
     :returns: Array of cookie objects.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getCookies',
+        "method": "Page.getCookies",
     }
     json = yield cmd_dict
-    return [network.Cookie.from_json(i) for i in json['cookies']]
+    return [network.Cookie.from_json(i) for i in json["cookies"]]
 
 
-def get_frame_tree() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,FrameTree]:
-    '''
+def get_frame_tree() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, FrameTree]:
+    """
     Returns present frame tree structure.
 
     :returns: Present frame tree structure.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getFrameTree',
+        "method": "Page.getFrameTree",
     }
     json = yield cmd_dict
-    return FrameTree.from_json(json['frameTree'])
+    return FrameTree.from_json(json["frameTree"])
 
 
-def get_layout_metrics() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tuple[LayoutViewport, VisualViewport, dom.Rect]]:
-    '''
+def get_layout_metrics() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.Tuple[LayoutViewport, VisualViewport, dom.Rect]
+]:
+    """
     Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
 
     :returns: A tuple with the following items:
@@ -1029,52 +1076,53 @@ def get_layout_metrics() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tupl
         0. **layoutViewport** - Metrics relating to the layout viewport.
         1. **visualViewport** - Metrics relating to the visual viewport.
         2. **contentSize** - Size of scrollable area.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getLayoutMetrics',
+        "method": "Page.getLayoutMetrics",
     }
     json = yield cmd_dict
     return (
-        LayoutViewport.from_json(json['layoutViewport']),
-        VisualViewport.from_json(json['visualViewport']),
-        dom.Rect.from_json(json['contentSize'])
+        LayoutViewport.from_json(json["layoutViewport"]),
+        VisualViewport.from_json(json["visualViewport"]),
+        dom.Rect.from_json(json["contentSize"]),
     )
 
 
-def get_navigation_history() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tuple[int, typing.List[NavigationEntry]]]:
-    '''
+def get_navigation_history() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.Tuple[int, typing.List[NavigationEntry]]
+]:
+    """
     Returns navigation history for the current page.
 
     :returns: A tuple with the following items:
 
         0. **currentIndex** - Index of the current navigation history entry.
         1. **entries** - Array of navigation history entries.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getNavigationHistory',
+        "method": "Page.getNavigationHistory",
     }
     json = yield cmd_dict
     return (
-        int(json['currentIndex']),
-        [NavigationEntry.from_json(i) for i in json['entries']]
+        int(json["currentIndex"]),
+        [NavigationEntry.from_json(i) for i in json["entries"]],
     )
 
 
-def reset_navigation_history() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def reset_navigation_history() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Resets navigation history for the current page.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.resetNavigationHistory',
+        "method": "Page.resetNavigationHistory",
     }
     json = yield cmd_dict
 
 
 def get_resource_content(
-        frame_id: FrameId,
-        url: str
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tuple[str, bool]]:
-    '''
+    frame_id: FrameId, url: str
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, typing.Tuple[str, bool]]:
+    """
     Returns content of the given resource.
 
     **EXPERIMENTAL**
@@ -1085,65 +1133,67 @@ def get_resource_content(
 
         0. **content** - Resource content.
         1. **base64Encoded** - True, if content was served as base64.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
-    params['url'] = url
+    params["frameId"] = frame_id.to_json()
+    params["url"] = url
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getResourceContent',
-        'params': params,
+        "method": "Page.getResourceContent",
+        "params": params,
     }
     json = yield cmd_dict
-    return (
-        str(json['content']),
-        bool(json['base64Encoded'])
-    )
+    return (str(json["content"]), bool(json["base64Encoded"]))
 
 
-def get_resource_tree() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,FrameResourceTree]:
-    '''
+def get_resource_tree() -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, FrameResourceTree
+]:
+    """
     Returns present frame / resource tree structure.
 
     **EXPERIMENTAL**
 
     :returns: Present frame / resource tree structure.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.getResourceTree',
+        "method": "Page.getResourceTree",
     }
     json = yield cmd_dict
-    return FrameResourceTree.from_json(json['frameTree'])
+    return FrameResourceTree.from_json(json["frameTree"])
 
 
 def handle_java_script_dialog(
-        accept: bool,
-        prompt_text: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    accept: bool, prompt_text: typing.Optional[str] = None
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 
     :param accept: Whether to accept or dismiss the dialog.
     :param prompt_text: *(Optional)* The text to enter into the dialog prompt before accepting. Used only if this is a prompt dialog.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['accept'] = accept
+    params["accept"] = accept
     if prompt_text is not None:
-        params['promptText'] = prompt_text
+        params["promptText"] = prompt_text
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.handleJavaScriptDialog',
-        'params': params,
+        "method": "Page.handleJavaScriptDialog",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def navigate(
-        url: str,
-        referrer: typing.Optional[str] = None,
-        transition_type: typing.Optional[TransitionType] = None,
-        frame_id: typing.Optional[FrameId] = None,
-        referrer_policy: typing.Optional[ReferrerPolicy] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tuple[FrameId, typing.Optional[network.LoaderId], typing.Optional[str]]]:
-    '''
+    url: str,
+    referrer: typing.Optional[str] = None,
+    transition_type: typing.Optional[TransitionType] = None,
+    frame_id: typing.Optional[FrameId] = None,
+    referrer_policy: typing.Optional[ReferrerPolicy] = None,
+) -> typing.Generator[
+    T_JSON_DICT,
+    T_JSON_DICT,
+    typing.Tuple[FrameId, typing.Optional[network.LoaderId], typing.Optional[str]],
+]:
+    """
     Navigates current page to the given URL.
 
     :param url: URL to navigate the page to.
@@ -1156,65 +1206,67 @@ def navigate(
         0. **frameId** - Frame id that has navigated (or failed to navigate)
         1. **loaderId** - *(Optional)* Loader identifier.
         2. **errorText** - *(Optional)* User friendly error message, present if and only if navigation has failed.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['url'] = url
+    params["url"] = url
     if referrer is not None:
-        params['referrer'] = referrer
+        params["referrer"] = referrer
     if transition_type is not None:
-        params['transitionType'] = transition_type.to_json()
+        params["transitionType"] = transition_type.to_json()
     if frame_id is not None:
-        params['frameId'] = frame_id.to_json()
+        params["frameId"] = frame_id.to_json()
     if referrer_policy is not None:
-        params['referrerPolicy'] = referrer_policy.to_json()
+        params["referrerPolicy"] = referrer_policy.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.navigate',
-        'params': params,
+        "method": "Page.navigate",
+        "params": params,
     }
     json = yield cmd_dict
     return (
-        FrameId.from_json(json['frameId']),
-        network.LoaderId.from_json(json['loaderId']) if 'loaderId' in json else None,
-        str(json['errorText']) if 'errorText' in json else None
+        FrameId.from_json(json["frameId"]),
+        network.LoaderId.from_json(json["loaderId"]) if "loaderId" in json else None,
+        str(json["errorText"]) if "errorText" in json else None,
     )
 
 
 def navigate_to_history_entry(
-        entry_id: int
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    entry_id: int,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Navigates current page to the given history entry.
 
     :param entry_id: Unique id of the entry to navigate to.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['entryId'] = entry_id
+    params["entryId"] = entry_id
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.navigateToHistoryEntry',
-        'params': params,
+        "method": "Page.navigateToHistoryEntry",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def print_to_pdf(
-        landscape: typing.Optional[bool] = None,
-        display_header_footer: typing.Optional[bool] = None,
-        print_background: typing.Optional[bool] = None,
-        scale: typing.Optional[float] = None,
-        paper_width: typing.Optional[float] = None,
-        paper_height: typing.Optional[float] = None,
-        margin_top: typing.Optional[float] = None,
-        margin_bottom: typing.Optional[float] = None,
-        margin_left: typing.Optional[float] = None,
-        margin_right: typing.Optional[float] = None,
-        page_ranges: typing.Optional[str] = None,
-        ignore_invalid_page_ranges: typing.Optional[bool] = None,
-        header_template: typing.Optional[str] = None,
-        footer_template: typing.Optional[str] = None,
-        prefer_css_page_size: typing.Optional[bool] = None,
-        transfer_mode: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.Tuple[str, typing.Optional[io.StreamHandle]]]:
-    '''
+    landscape: typing.Optional[bool] = None,
+    display_header_footer: typing.Optional[bool] = None,
+    print_background: typing.Optional[bool] = None,
+    scale: typing.Optional[float] = None,
+    paper_width: typing.Optional[float] = None,
+    paper_height: typing.Optional[float] = None,
+    margin_top: typing.Optional[float] = None,
+    margin_bottom: typing.Optional[float] = None,
+    margin_left: typing.Optional[float] = None,
+    margin_right: typing.Optional[float] = None,
+    page_ranges: typing.Optional[str] = None,
+    ignore_invalid_page_ranges: typing.Optional[bool] = None,
+    header_template: typing.Optional[str] = None,
+    footer_template: typing.Optional[str] = None,
+    prefer_css_page_size: typing.Optional[bool] = None,
+    transfer_mode: typing.Optional[str] = None,
+) -> typing.Generator[
+    T_JSON_DICT, T_JSON_DICT, typing.Tuple[str, typing.Optional[io.StreamHandle]]
+]:
+    """
     Print page as PDF.
 
     :param landscape: *(Optional)* Paper orientation. Defaults to false.
@@ -1237,136 +1289,136 @@ def print_to_pdf(
 
         0. **data** - Base64-encoded pdf data. Empty if `` returnAsStream` is specified.
         1. **stream** - *(Optional)* A handle of the stream that holds resulting PDF data.
-    '''
+    """
     params: T_JSON_DICT = dict()
     if landscape is not None:
-        params['landscape'] = landscape
+        params["landscape"] = landscape
     if display_header_footer is not None:
-        params['displayHeaderFooter'] = display_header_footer
+        params["displayHeaderFooter"] = display_header_footer
     if print_background is not None:
-        params['printBackground'] = print_background
+        params["printBackground"] = print_background
     if scale is not None:
-        params['scale'] = scale
+        params["scale"] = scale
     if paper_width is not None:
-        params['paperWidth'] = paper_width
+        params["paperWidth"] = paper_width
     if paper_height is not None:
-        params['paperHeight'] = paper_height
+        params["paperHeight"] = paper_height
     if margin_top is not None:
-        params['marginTop'] = margin_top
+        params["marginTop"] = margin_top
     if margin_bottom is not None:
-        params['marginBottom'] = margin_bottom
+        params["marginBottom"] = margin_bottom
     if margin_left is not None:
-        params['marginLeft'] = margin_left
+        params["marginLeft"] = margin_left
     if margin_right is not None:
-        params['marginRight'] = margin_right
+        params["marginRight"] = margin_right
     if page_ranges is not None:
-        params['pageRanges'] = page_ranges
+        params["pageRanges"] = page_ranges
     if ignore_invalid_page_ranges is not None:
-        params['ignoreInvalidPageRanges'] = ignore_invalid_page_ranges
+        params["ignoreInvalidPageRanges"] = ignore_invalid_page_ranges
     if header_template is not None:
-        params['headerTemplate'] = header_template
+        params["headerTemplate"] = header_template
     if footer_template is not None:
-        params['footerTemplate'] = footer_template
+        params["footerTemplate"] = footer_template
     if prefer_css_page_size is not None:
-        params['preferCSSPageSize'] = prefer_css_page_size
+        params["preferCSSPageSize"] = prefer_css_page_size
     if transfer_mode is not None:
-        params['transferMode'] = transfer_mode
+        params["transferMode"] = transfer_mode
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.printToPDF',
-        'params': params,
+        "method": "Page.printToPDF",
+        "params": params,
     }
     json = yield cmd_dict
     return (
-        str(json['data']),
-        io.StreamHandle.from_json(json['stream']) if 'stream' in json else None
+        str(json["data"]),
+        io.StreamHandle.from_json(json["stream"]) if "stream" in json else None,
     )
 
 
 def reload(
-        ignore_cache: typing.Optional[bool] = None,
-        script_to_evaluate_on_load: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    ignore_cache: typing.Optional[bool] = None,
+    script_to_evaluate_on_load: typing.Optional[str] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Reloads given page optionally ignoring the cache.
 
     :param ignore_cache: *(Optional)* If true, browser cache is ignored (as if the user pressed Shift+refresh).
     :param script_to_evaluate_on_load: *(Optional)* If set, the script will be injected into all frames of the inspected page after reload. Argument will be ignored if reloading dataURL origin.
-    '''
+    """
     params: T_JSON_DICT = dict()
     if ignore_cache is not None:
-        params['ignoreCache'] = ignore_cache
+        params["ignoreCache"] = ignore_cache
     if script_to_evaluate_on_load is not None:
-        params['scriptToEvaluateOnLoad'] = script_to_evaluate_on_load
+        params["scriptToEvaluateOnLoad"] = script_to_evaluate_on_load
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.reload',
-        'params': params,
+        "method": "Page.reload",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def remove_script_to_evaluate_on_load(
-        identifier: ScriptIdentifier
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    identifier: ScriptIdentifier,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
 
     **EXPERIMENTAL**
 
     :param identifier:
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['identifier'] = identifier.to_json()
+    params["identifier"] = identifier.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.removeScriptToEvaluateOnLoad',
-        'params': params,
+        "method": "Page.removeScriptToEvaluateOnLoad",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def remove_script_to_evaluate_on_new_document(
-        identifier: ScriptIdentifier
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    identifier: ScriptIdentifier,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Removes given script from the list.
 
     :param identifier:
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['identifier'] = identifier.to_json()
+    params["identifier"] = identifier.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.removeScriptToEvaluateOnNewDocument',
-        'params': params,
+        "method": "Page.removeScriptToEvaluateOnNewDocument",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def screencast_frame_ack(
-        session_id: int
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    session_id: int,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Acknowledges that a screencast frame has been received by the frontend.
 
     **EXPERIMENTAL**
 
     :param session_id: Frame number.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['sessionId'] = session_id
+    params["sessionId"] = session_id
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.screencastFrameAck',
-        'params': params,
+        "method": "Page.screencastFrameAck",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def search_in_resource(
-        frame_id: FrameId,
-        url: str,
-        query: str,
-        case_sensitive: typing.Optional[bool] = None,
-        is_regex: typing.Optional[bool] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,typing.List[debugger.SearchMatch]]:
-    '''
+    frame_id: FrameId,
+    url: str,
+    query: str,
+    case_sensitive: typing.Optional[bool] = None,
+    is_regex: typing.Optional[bool] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, typing.List[debugger.SearchMatch]]:
+    """
     Searches for given string in resource content.
 
     **EXPERIMENTAL**
@@ -1377,76 +1429,74 @@ def search_in_resource(
     :param case_sensitive: *(Optional)* If true, search is case sensitive.
     :param is_regex: *(Optional)* If true, treats string parameter as regex.
     :returns: List of search matches.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
-    params['url'] = url
-    params['query'] = query
+    params["frameId"] = frame_id.to_json()
+    params["url"] = url
+    params["query"] = query
     if case_sensitive is not None:
-        params['caseSensitive'] = case_sensitive
+        params["caseSensitive"] = case_sensitive
     if is_regex is not None:
-        params['isRegex'] = is_regex
+        params["isRegex"] = is_regex
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.searchInResource',
-        'params': params,
+        "method": "Page.searchInResource",
+        "params": params,
     }
     json = yield cmd_dict
-    return [debugger.SearchMatch.from_json(i) for i in json['result']]
+    return [debugger.SearchMatch.from_json(i) for i in json["result"]]
 
 
 def set_ad_blocking_enabled(
-        enabled: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    enabled: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Enable Chrome's experimental ad filter on all sites.
 
     **EXPERIMENTAL**
 
     :param enabled: Whether to block ads.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['enabled'] = enabled
+    params["enabled"] = enabled
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setAdBlockingEnabled',
-        'params': params,
+        "method": "Page.setAdBlockingEnabled",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-def set_bypass_csp(
-        enabled: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def set_bypass_csp(enabled: bool) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Enable page Content Security Policy by-passing.
 
     **EXPERIMENTAL**
 
     :param enabled: Whether to bypass page CSP.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['enabled'] = enabled
+    params["enabled"] = enabled
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setBypassCSP',
-        'params': params,
+        "method": "Page.setBypassCSP",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_device_metrics_override(
-        width: int,
-        height: int,
-        device_scale_factor: float,
-        mobile: bool,
-        scale: typing.Optional[float] = None,
-        screen_width: typing.Optional[int] = None,
-        screen_height: typing.Optional[int] = None,
-        position_x: typing.Optional[int] = None,
-        position_y: typing.Optional[int] = None,
-        dont_set_visible_size: typing.Optional[bool] = None,
-        screen_orientation: typing.Optional[emulation.ScreenOrientation] = None,
-        viewport: typing.Optional[Viewport] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    width: int,
+    height: int,
+    device_scale_factor: float,
+    mobile: bool,
+    scale: typing.Optional[float] = None,
+    screen_width: typing.Optional[int] = None,
+    screen_height: typing.Optional[int] = None,
+    position_x: typing.Optional[int] = None,
+    position_y: typing.Optional[int] = None,
+    dont_set_visible_size: typing.Optional[bool] = None,
+    screen_orientation: typing.Optional[emulation.ScreenOrientation] = None,
+    viewport: typing.Optional[Viewport] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
     window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
     query results).
@@ -1465,41 +1515,39 @@ def set_device_metrics_override(
     :param dont_set_visible_size: *(Optional)* Do not set visible view size, rely upon explicit setVisibleSize call.
     :param screen_orientation: *(Optional)* Screen orientation override.
     :param viewport: *(Optional)* The viewport dimensions and scale. If not set, the override is cleared.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['width'] = width
-    params['height'] = height
-    params['deviceScaleFactor'] = device_scale_factor
-    params['mobile'] = mobile
+    params["width"] = width
+    params["height"] = height
+    params["deviceScaleFactor"] = device_scale_factor
+    params["mobile"] = mobile
     if scale is not None:
-        params['scale'] = scale
+        params["scale"] = scale
     if screen_width is not None:
-        params['screenWidth'] = screen_width
+        params["screenWidth"] = screen_width
     if screen_height is not None:
-        params['screenHeight'] = screen_height
+        params["screenHeight"] = screen_height
     if position_x is not None:
-        params['positionX'] = position_x
+        params["positionX"] = position_x
     if position_y is not None:
-        params['positionY'] = position_y
+        params["positionY"] = position_y
     if dont_set_visible_size is not None:
-        params['dontSetVisibleSize'] = dont_set_visible_size
+        params["dontSetVisibleSize"] = dont_set_visible_size
     if screen_orientation is not None:
-        params['screenOrientation'] = screen_orientation.to_json()
+        params["screenOrientation"] = screen_orientation.to_json()
     if viewport is not None:
-        params['viewport'] = viewport.to_json()
+        params["viewport"] = viewport.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setDeviceMetricsOverride',
-        'params': params,
+        "method": "Page.setDeviceMetricsOverride",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_device_orientation_override(
-        alpha: float,
-        beta: float,
-        gamma: float
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    alpha: float, beta: float, gamma: float
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Overrides the Device Orientation.
 
     **EXPERIMENTAL**
@@ -1507,176 +1555,173 @@ def set_device_orientation_override(
     :param alpha: Mock alpha
     :param beta: Mock beta
     :param gamma: Mock gamma
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['alpha'] = alpha
-    params['beta'] = beta
-    params['gamma'] = gamma
+    params["alpha"] = alpha
+    params["beta"] = beta
+    params["gamma"] = gamma
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setDeviceOrientationOverride',
-        'params': params,
+        "method": "Page.setDeviceOrientationOverride",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_font_families(
-        font_families: FontFamilies
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    font_families: FontFamilies,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Set generic font families.
 
     **EXPERIMENTAL**
 
     :param font_families: Specifies font families to set. If a font family is not specified, it won't be changed.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['fontFamilies'] = font_families.to_json()
+    params["fontFamilies"] = font_families.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setFontFamilies',
-        'params': params,
+        "method": "Page.setFontFamilies",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_font_sizes(
-        font_sizes: FontSizes
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    font_sizes: FontSizes,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Set default font sizes.
 
     **EXPERIMENTAL**
 
     :param font_sizes: Specifies font sizes to set. If a font size is not specified, it won't be changed.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['fontSizes'] = font_sizes.to_json()
+    params["fontSizes"] = font_sizes.to_json()
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setFontSizes',
-        'params': params,
+        "method": "Page.setFontSizes",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_document_content(
-        frame_id: FrameId,
-        html: str
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    frame_id: FrameId, html: str
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Sets given markup as the document's HTML.
 
     :param frame_id: Frame id to set HTML for.
     :param html: HTML content to set.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['frameId'] = frame_id.to_json()
-    params['html'] = html
+    params["frameId"] = frame_id.to_json()
+    params["html"] = html
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setDocumentContent',
-        'params': params,
+        "method": "Page.setDocumentContent",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_download_behavior(
-        behavior: str,
-        download_path: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    behavior: str, download_path: typing.Optional[str] = None
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Set the behavior when downloading a file.
 
     **EXPERIMENTAL**
 
     :param behavior: Whether to allow all or deny all download requests, or use default Chrome behavior if available (otherwise deny).
     :param download_path: *(Optional)* The default path to save downloaded files to. This is requred if behavior is set to 'allow'
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['behavior'] = behavior
+    params["behavior"] = behavior
     if download_path is not None:
-        params['downloadPath'] = download_path
+        params["downloadPath"] = download_path
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setDownloadBehavior',
-        'params': params,
+        "method": "Page.setDownloadBehavior",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_geolocation_override(
-        latitude: typing.Optional[float] = None,
-        longitude: typing.Optional[float] = None,
-        accuracy: typing.Optional[float] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    latitude: typing.Optional[float] = None,
+    longitude: typing.Optional[float] = None,
+    accuracy: typing.Optional[float] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
     unavailable.
 
     :param latitude: *(Optional)* Mock latitude
     :param longitude: *(Optional)* Mock longitude
     :param accuracy: *(Optional)* Mock accuracy
-    '''
+    """
     params: T_JSON_DICT = dict()
     if latitude is not None:
-        params['latitude'] = latitude
+        params["latitude"] = latitude
     if longitude is not None:
-        params['longitude'] = longitude
+        params["longitude"] = longitude
     if accuracy is not None:
-        params['accuracy'] = accuracy
+        params["accuracy"] = accuracy
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setGeolocationOverride',
-        'params': params,
+        "method": "Page.setGeolocationOverride",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_lifecycle_events_enabled(
-        enabled: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    enabled: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Controls whether page will emit lifecycle events.
 
     **EXPERIMENTAL**
 
     :param enabled: If true, starts emitting lifecycle events.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['enabled'] = enabled
+    params["enabled"] = enabled
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setLifecycleEventsEnabled',
-        'params': params,
+        "method": "Page.setLifecycleEventsEnabled",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def set_touch_emulation_enabled(
-        enabled: bool,
-        configuration: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    enabled: bool, configuration: typing.Optional[str] = None
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Toggles mouse event-based touch event emulation.
 
     **EXPERIMENTAL**
 
     :param enabled: Whether the touch event emulation should be enabled.
     :param configuration: *(Optional)* Touch/gesture events configuration. Default: current platform.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['enabled'] = enabled
+    params["enabled"] = enabled
     if configuration is not None:
-        params['configuration'] = configuration
+        params["configuration"] = configuration
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setTouchEmulationEnabled',
-        'params': params,
+        "method": "Page.setTouchEmulationEnabled",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def start_screencast(
-        format_: typing.Optional[str] = None,
-        quality: typing.Optional[int] = None,
-        max_width: typing.Optional[int] = None,
-        max_height: typing.Optional[int] = None,
-        every_nth_frame: typing.Optional[int] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    format_: typing.Optional[str] = None,
+    quality: typing.Optional[int] = None,
+    max_width: typing.Optional[int] = None,
+    max_height: typing.Optional[int] = None,
+    every_nth_frame: typing.Optional[int] = None,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Starts sending each frame using the ``screencastFrame`` event.
 
     **EXPERIMENTAL**
@@ -1686,63 +1731,63 @@ def start_screencast(
     :param max_width: *(Optional)* Maximum screenshot width.
     :param max_height: *(Optional)* Maximum screenshot height.
     :param every_nth_frame: *(Optional)* Send every n-th frame.
-    '''
+    """
     params: T_JSON_DICT = dict()
     if format_ is not None:
-        params['format'] = format_
+        params["format"] = format_
     if quality is not None:
-        params['quality'] = quality
+        params["quality"] = quality
     if max_width is not None:
-        params['maxWidth'] = max_width
+        params["maxWidth"] = max_width
     if max_height is not None:
-        params['maxHeight'] = max_height
+        params["maxHeight"] = max_height
     if every_nth_frame is not None:
-        params['everyNthFrame'] = every_nth_frame
+        params["everyNthFrame"] = every_nth_frame
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.startScreencast',
-        'params': params,
+        "method": "Page.startScreencast",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-def stop_loading() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def stop_loading() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Force the page stop all navigations and pending resource fetches.
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.stopLoading',
+        "method": "Page.stopLoading",
     }
     json = yield cmd_dict
 
 
-def crash() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def crash() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Crashes renderer on the IO thread, generates minidumps.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.crash',
+        "method": "Page.crash",
     }
     json = yield cmd_dict
 
 
-def close() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def close() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Tries to close page, running its beforeunload hooks, if any.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.close',
+        "method": "Page.close",
     }
     json = yield cmd_dict
 
 
 def set_web_lifecycle_state(
-        state: str
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    state: str,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Tries to update the web lifecycle state of the page.
     It will transition the page to the given state according to:
     https://github.com/WICG/web-lifecycle/
@@ -1750,52 +1795,51 @@ def set_web_lifecycle_state(
     **EXPERIMENTAL**
 
     :param state: Target lifecycle state
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['state'] = state
+    params["state"] = state
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setWebLifecycleState',
-        'params': params,
+        "method": "Page.setWebLifecycleState",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-def stop_screencast() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def stop_screencast() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Stops sending each frame in the ``screencastFrame``.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.stopScreencast',
+        "method": "Page.stopScreencast",
     }
     json = yield cmd_dict
 
 
 def set_produce_compilation_cache(
-        enabled: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    enabled: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Forces compilation cache to be generated for every subresource script.
 
     **EXPERIMENTAL**
 
     :param enabled:
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['enabled'] = enabled
+    params["enabled"] = enabled
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setProduceCompilationCache',
-        'params': params,
+        "method": "Page.setProduceCompilationCache",
+        "params": params,
     }
     json = yield cmd_dict
 
 
 def add_compilation_cache(
-        url: str,
-        data: str
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    url: str, data: str
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Seeds compilation cache for given url. Compilation cache does not survive
     cross-process navigation.
 
@@ -1803,68 +1847,67 @@ def add_compilation_cache(
 
     :param url:
     :param data: Base64-encoded data
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['url'] = url
-    params['data'] = data
+    params["url"] = url
+    params["data"] = data
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.addCompilationCache',
-        'params': params,
+        "method": "Page.addCompilationCache",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-def clear_compilation_cache() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def clear_compilation_cache() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Clears seeded compilation cache.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.clearCompilationCache',
+        "method": "Page.clearCompilationCache",
     }
     json = yield cmd_dict
 
 
 def generate_test_report(
-        message: str,
-        group: typing.Optional[str] = None
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    message: str, group: typing.Optional[str] = None
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Generates a report for testing.
 
     **EXPERIMENTAL**
 
     :param message: Message to be displayed in the report.
     :param group: *(Optional)* Specifies the endpoint group to deliver the report to.
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['message'] = message
+    params["message"] = message
     if group is not None:
-        params['group'] = group
+        params["group"] = group
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.generateTestReport',
-        'params': params,
+        "method": "Page.generateTestReport",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-def wait_for_debugger() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+def wait_for_debugger() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
 
     **EXPERIMENTAL**
-    '''
+    """
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.waitForDebugger',
+        "method": "Page.waitForDebugger",
     }
     json = yield cmd_dict
 
 
 def set_intercept_file_chooser_dialog(
-        enabled: bool
-    ) -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
-    '''
+    enabled: bool,
+) -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
+    """
     Intercept file chooser requests and transfer control to protocol clients.
     When file chooser interception is enabled, native file chooser dialog is not shown.
     Instead, a protocol event ``Page.fileChooserOpened`` is emitted.
@@ -1872,34 +1915,33 @@ def set_intercept_file_chooser_dialog(
     **EXPERIMENTAL**
 
     :param enabled:
-    '''
+    """
     params: T_JSON_DICT = dict()
-    params['enabled'] = enabled
+    params["enabled"] = enabled
     cmd_dict: T_JSON_DICT = {
-        'method': 'Page.setInterceptFileChooserDialog',
-        'params': params,
+        "method": "Page.setInterceptFileChooserDialog",
+        "params": params,
     }
     json = yield cmd_dict
 
 
-@event_class('Page.domContentEventFired')
+@event_class("Page.domContentEventFired")
 @dataclass
 class DomContentEventFired:
     timestamp: network.MonotonicTime
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> DomContentEventFired:
-        return cls(
-            timestamp=network.MonotonicTime.from_json(json['timestamp'])
-        )
+        return cls(timestamp=network.MonotonicTime.from_json(json["timestamp"]))
 
 
-@event_class('Page.fileChooserOpened')
+@event_class("Page.fileChooserOpened")
 @dataclass
 class FileChooserOpened:
-    '''
+    """
     Emitted only when ``page.interceptFileChooser`` is enabled.
-    '''
+    """
+
     #: Id of the frame containing input node.
     frame_id: FrameId
     #: Input node id.
@@ -1910,18 +1952,19 @@ class FileChooserOpened:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FileChooserOpened:
         return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            backend_node_id=dom.BackendNodeId.from_json(json['backendNodeId']),
-            mode=str(json['mode'])
+            frame_id=FrameId.from_json(json["frameId"]),
+            backend_node_id=dom.BackendNodeId.from_json(json["backendNodeId"]),
+            mode=str(json["mode"]),
         )
 
 
-@event_class('Page.frameAttached')
+@event_class("Page.frameAttached")
 @dataclass
 class FrameAttached:
-    '''
+    """
     Fired when frame has been attached to its parent.
-    '''
+    """
+
     #: Id of the frame that has been attached.
     frame_id: FrameId
     #: Parent frame identifier.
@@ -1932,86 +1975,83 @@ class FrameAttached:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameAttached:
         return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            parent_frame_id=FrameId.from_json(json['parentFrameId']),
-            stack=runtime.StackTrace.from_json(json['stack']) if 'stack' in json else None
+            frame_id=FrameId.from_json(json["frameId"]),
+            parent_frame_id=FrameId.from_json(json["parentFrameId"]),
+            stack=runtime.StackTrace.from_json(json["stack"])
+            if "stack" in json
+            else None,
         )
 
 
-@event_class('Page.frameClearedScheduledNavigation')
+@event_class("Page.frameClearedScheduledNavigation")
 @dataclass
 class FrameClearedScheduledNavigation:
-    '''
+    """
     Fired when frame no longer has a scheduled navigation.
-    '''
+    """
+
     #: Id of the frame that has cleared its scheduled navigation.
     frame_id: FrameId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameClearedScheduledNavigation:
-        return cls(
-            frame_id=FrameId.from_json(json['frameId'])
-        )
+        return cls(frame_id=FrameId.from_json(json["frameId"]))
 
 
-@event_class('Page.frameDetached')
+@event_class("Page.frameDetached")
 @dataclass
 class FrameDetached:
-    '''
+    """
     Fired when frame has been detached from its parent.
-    '''
+    """
+
     #: Id of the frame that has been detached.
     frame_id: FrameId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameDetached:
-        return cls(
-            frame_id=FrameId.from_json(json['frameId'])
-        )
+        return cls(frame_id=FrameId.from_json(json["frameId"]))
 
 
-@event_class('Page.frameNavigated')
+@event_class("Page.frameNavigated")
 @dataclass
 class FrameNavigated:
-    '''
+    """
     Fired once navigation of the frame has completed. Frame is now associated with the new loader.
-    '''
+    """
+
     #: Frame object.
     frame: Frame
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameNavigated:
-        return cls(
-            frame=Frame.from_json(json['frame'])
-        )
+        return cls(frame=Frame.from_json(json["frame"]))
 
 
-@event_class('Page.frameResized')
+@event_class("Page.frameResized")
 @dataclass
 class FrameResized:
-    '''
+    """
     **EXPERIMENTAL**
 
 
-    '''
-
+    """
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameResized:
-        return cls(
-
-        )
+        return cls()
 
 
-@event_class('Page.frameRequestedNavigation')
+@event_class("Page.frameRequestedNavigation")
 @dataclass
 class FrameRequestedNavigation:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when a renderer-initiated navigation is requested.
     Navigation may still be cancelled after the event is issued.
-    '''
+    """
+
     #: Id of the frame that is being navigated.
     frame_id: FrameId
     #: The reason for the navigation.
@@ -2024,19 +2064,20 @@ class FrameRequestedNavigation:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameRequestedNavigation:
         return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            reason=ClientNavigationReason.from_json(json['reason']),
-            url=str(json['url']),
-            disposition=ClientNavigationDisposition.from_json(json['disposition'])
+            frame_id=FrameId.from_json(json["frameId"]),
+            reason=ClientNavigationReason.from_json(json["reason"]),
+            url=str(json["url"]),
+            disposition=ClientNavigationDisposition.from_json(json["disposition"]),
         )
 
 
-@event_class('Page.frameScheduledNavigation')
+@event_class("Page.frameScheduledNavigation")
 @dataclass
 class FrameScheduledNavigation:
-    '''
+    """
     Fired when frame schedules a potential navigation.
-    '''
+    """
+
     #: Id of the frame that has scheduled a navigation.
     frame_id: FrameId
     #: Delay (in seconds) until the navigation is scheduled to begin. The navigation is not
@@ -2050,57 +2091,56 @@ class FrameScheduledNavigation:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameScheduledNavigation:
         return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            delay=float(json['delay']),
-            reason=ClientNavigationReason.from_json(json['reason']),
-            url=str(json['url'])
+            frame_id=FrameId.from_json(json["frameId"]),
+            delay=float(json["delay"]),
+            reason=ClientNavigationReason.from_json(json["reason"]),
+            url=str(json["url"]),
         )
 
 
-@event_class('Page.frameStartedLoading')
+@event_class("Page.frameStartedLoading")
 @dataclass
 class FrameStartedLoading:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when frame has started loading.
-    '''
+    """
+
     #: Id of the frame that has started loading.
     frame_id: FrameId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameStartedLoading:
-        return cls(
-            frame_id=FrameId.from_json(json['frameId'])
-        )
+        return cls(frame_id=FrameId.from_json(json["frameId"]))
 
 
-@event_class('Page.frameStoppedLoading')
+@event_class("Page.frameStoppedLoading")
 @dataclass
 class FrameStoppedLoading:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when frame has stopped loading.
-    '''
+    """
+
     #: Id of the frame that has stopped loading.
     frame_id: FrameId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> FrameStoppedLoading:
-        return cls(
-            frame_id=FrameId.from_json(json['frameId'])
-        )
+        return cls(frame_id=FrameId.from_json(json["frameId"]))
 
 
-@event_class('Page.downloadWillBegin')
+@event_class("Page.downloadWillBegin")
 @dataclass
 class DownloadWillBegin:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when page is about to start a download.
-    '''
+    """
+
     #: Id of the frame that caused download to begin.
     frame_id: FrameId
     #: Global unique identifier of the download.
@@ -2113,21 +2153,22 @@ class DownloadWillBegin:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> DownloadWillBegin:
         return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            guid=str(json['guid']),
-            url=str(json['url']),
-            suggested_filename=str(json['suggestedFilename'])
+            frame_id=FrameId.from_json(json["frameId"]),
+            guid=str(json["guid"]),
+            url=str(json["url"]),
+            suggested_filename=str(json["suggestedFilename"]),
         )
 
 
-@event_class('Page.downloadProgress')
+@event_class("Page.downloadProgress")
 @dataclass
 class DownloadProgress:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when download makes progress. Last call has ``done`` == true.
-    '''
+    """
+
     #: Global unique identifier of the download.
     guid: str
     #: Total expected bytes to download.
@@ -2140,50 +2181,45 @@ class DownloadProgress:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> DownloadProgress:
         return cls(
-            guid=str(json['guid']),
-            total_bytes=float(json['totalBytes']),
-            received_bytes=float(json['receivedBytes']),
-            state=str(json['state'])
+            guid=str(json["guid"]),
+            total_bytes=float(json["totalBytes"]),
+            received_bytes=float(json["receivedBytes"]),
+            state=str(json["state"]),
         )
 
 
-@event_class('Page.interstitialHidden')
+@event_class("Page.interstitialHidden")
 @dataclass
 class InterstitialHidden:
-    '''
+    """
     Fired when interstitial page was hidden
-    '''
-
+    """
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> InterstitialHidden:
-        return cls(
-
-        )
+        return cls()
 
 
-@event_class('Page.interstitialShown')
+@event_class("Page.interstitialShown")
 @dataclass
 class InterstitialShown:
-    '''
+    """
     Fired when interstitial page was shown
-    '''
-
+    """
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> InterstitialShown:
-        return cls(
-
-        )
+        return cls()
 
 
-@event_class('Page.javascriptDialogClosed')
+@event_class("Page.javascriptDialogClosed")
 @dataclass
 class JavascriptDialogClosed:
-    '''
+    """
     Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been
     closed.
-    '''
+    """
+
     #: Whether dialog was confirmed.
     result: bool
     #: User input in case of prompt.
@@ -2191,19 +2227,17 @@ class JavascriptDialogClosed:
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> JavascriptDialogClosed:
-        return cls(
-            result=bool(json['result']),
-            user_input=str(json['userInput'])
-        )
+        return cls(result=bool(json["result"]), user_input=str(json["userInput"]))
 
 
-@event_class('Page.javascriptDialogOpening')
+@event_class("Page.javascriptDialogOpening")
 @dataclass
 class JavascriptDialogOpening:
-    '''
+    """
     Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to
     open.
-    '''
+    """
+
     #: Frame url.
     url: str
     #: Message that will be displayed by the dialog.
@@ -2220,20 +2254,23 @@ class JavascriptDialogOpening:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> JavascriptDialogOpening:
         return cls(
-            url=str(json['url']),
-            message=str(json['message']),
-            type_=DialogType.from_json(json['type']),
-            has_browser_handler=bool(json['hasBrowserHandler']),
-            default_prompt=str(json['defaultPrompt']) if 'defaultPrompt' in json else None
+            url=str(json["url"]),
+            message=str(json["message"]),
+            type_=DialogType.from_json(json["type"]),
+            has_browser_handler=bool(json["hasBrowserHandler"]),
+            default_prompt=str(json["defaultPrompt"])
+            if "defaultPrompt" in json
+            else None,
         )
 
 
-@event_class('Page.lifecycleEvent')
+@event_class("Page.lifecycleEvent")
 @dataclass
 class LifecycleEvent:
-    '''
+    """
     Fired for top level page lifecycle events such as navigation, load, paint, etc.
-    '''
+    """
+
     #: Id of the frame.
     frame_id: FrameId
     #: Loader identifier. Empty string if the request is fetched from worker.
@@ -2244,33 +2281,32 @@ class LifecycleEvent:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> LifecycleEvent:
         return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            loader_id=network.LoaderId.from_json(json['loaderId']),
-            name=str(json['name']),
-            timestamp=network.MonotonicTime.from_json(json['timestamp'])
+            frame_id=FrameId.from_json(json["frameId"]),
+            loader_id=network.LoaderId.from_json(json["loaderId"]),
+            name=str(json["name"]),
+            timestamp=network.MonotonicTime.from_json(json["timestamp"]),
         )
 
 
-@event_class('Page.loadEventFired')
+@event_class("Page.loadEventFired")
 @dataclass
 class LoadEventFired:
     timestamp: network.MonotonicTime
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> LoadEventFired:
-        return cls(
-            timestamp=network.MonotonicTime.from_json(json['timestamp'])
-        )
+        return cls(timestamp=network.MonotonicTime.from_json(json["timestamp"]))
 
 
-@event_class('Page.navigatedWithinDocument')
+@event_class("Page.navigatedWithinDocument")
 @dataclass
 class NavigatedWithinDocument:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
-    '''
+    """
+
     #: Id of the frame.
     frame_id: FrameId
     #: Frame's new url.
@@ -2278,20 +2314,18 @@ class NavigatedWithinDocument:
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> NavigatedWithinDocument:
-        return cls(
-            frame_id=FrameId.from_json(json['frameId']),
-            url=str(json['url'])
-        )
+        return cls(frame_id=FrameId.from_json(json["frameId"]), url=str(json["url"]))
 
 
-@event_class('Page.screencastFrame')
+@event_class("Page.screencastFrame")
 @dataclass
 class ScreencastFrame:
-    '''
+    """
     **EXPERIMENTAL**
 
     Compressed image data requested by the ``startScreencast``.
-    '''
+    """
+
     #: Base64-encoded compressed image.
     data: str
     #: Screencast frame metadata.
@@ -2302,37 +2336,37 @@ class ScreencastFrame:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> ScreencastFrame:
         return cls(
-            data=str(json['data']),
-            metadata=ScreencastFrameMetadata.from_json(json['metadata']),
-            session_id=int(json['sessionId'])
+            data=str(json["data"]),
+            metadata=ScreencastFrameMetadata.from_json(json["metadata"]),
+            session_id=int(json["sessionId"]),
         )
 
 
-@event_class('Page.screencastVisibilityChanged')
+@event_class("Page.screencastVisibilityChanged")
 @dataclass
 class ScreencastVisibilityChanged:
-    '''
+    """
     **EXPERIMENTAL**
 
     Fired when the page with currently enabled screencast was shown or hidden .
-    '''
+    """
+
     #: True if the page is visible.
     visible: bool
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> ScreencastVisibilityChanged:
-        return cls(
-            visible=bool(json['visible'])
-        )
+        return cls(visible=bool(json["visible"]))
 
 
-@event_class('Page.windowOpen')
+@event_class("Page.windowOpen")
 @dataclass
 class WindowOpen:
-    '''
+    """
     Fired when a new window is going to be opened, via window.open(), link click, form submission,
     etc.
-    '''
+    """
+
     #: The URL for the new window.
     url: str
     #: Window name.
@@ -2345,29 +2379,27 @@ class WindowOpen:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> WindowOpen:
         return cls(
-            url=str(json['url']),
-            window_name=str(json['windowName']),
-            window_features=[str(i) for i in json['windowFeatures']],
-            user_gesture=bool(json['userGesture'])
+            url=str(json["url"]),
+            window_name=str(json["windowName"]),
+            window_features=[str(i) for i in json["windowFeatures"]],
+            user_gesture=bool(json["userGesture"]),
         )
 
 
-@event_class('Page.compilationCacheProduced')
+@event_class("Page.compilationCacheProduced")
 @dataclass
 class CompilationCacheProduced:
-    '''
+    """
     **EXPERIMENTAL**
 
     Issued for every compilation cache generated. Is only available
     if Page.setGenerateCompilationCache is enabled.
-    '''
+    """
+
     url: str
     #: Base64-encoded data
     data: str
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> CompilationCacheProduced:
-        return cls(
-            url=str(json['url']),
-            data=str(json['data'])
-        )
+        return cls(url=str(json["url"]), data=str(json["data"]))

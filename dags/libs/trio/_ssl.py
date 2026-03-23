@@ -4,7 +4,8 @@ import contextlib
 import operator as _operator
 import ssl as _stdlib_ssl
 from enum import Enum as _Enum
-from typing import TYPE_CHECKING, Any, ClassVar, Final as TFinal, Generic, TypeVar
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, TypeVar
+from typing import Final as TFinal
 
 import trio
 

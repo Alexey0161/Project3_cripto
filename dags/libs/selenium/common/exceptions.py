@@ -17,15 +17,17 @@
 
 """Exceptions that may happen in all the webdriver code."""
 
-from typing import Optional
-from typing import Sequence
+from typing import Optional, Sequence
 
 
 class WebDriverException(Exception):
     """Base webdriver exception."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self,
+        msg: Optional[str] = None,
+        screen: Optional[str] = None,
+        stacktrace: Optional[Sequence[str]] = None,
     ) -> None:
         super().__init__()
         self.msg = msg

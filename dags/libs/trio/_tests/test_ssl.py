@@ -38,7 +38,8 @@ except ImportError as error:
 
 import trio
 
-from .. import _core, socket as tsocket
+from .. import _core
+from .. import socket as tsocket
 from .._abc import Stream
 from .._core import BrokenResourceError, ClosedResourceError
 from .._core._tests.tutil import slow
@@ -425,7 +426,9 @@ def ssl_wrap_pair(
 MemoryStapledStream: TypeAlias = StapledStream[MemorySendStream, MemoryReceiveStream]
 
 
-def ssl_memory_stream_pair(client_ctx: SSLContext, **kwargs: Any) -> tuple[
+def ssl_memory_stream_pair(
+    client_ctx: SSLContext, **kwargs: Any
+) -> tuple[
     SSLStream[MemoryStapledStream],
     SSLStream[MemoryStapledStream],
 ]:
@@ -436,7 +439,9 @@ def ssl_memory_stream_pair(client_ctx: SSLContext, **kwargs: Any) -> tuple[
 MyStapledStream: TypeAlias = StapledStream[SendStream, ReceiveStream]
 
 
-def ssl_lockstep_stream_pair(client_ctx: SSLContext, **kwargs: Any) -> tuple[
+def ssl_lockstep_stream_pair(
+    client_ctx: SSLContext, **kwargs: Any
+) -> tuple[
     SSLStream[MyStapledStream],
     SSLStream[MyStapledStream],
 ]:

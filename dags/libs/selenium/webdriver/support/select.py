@@ -15,8 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import UnexpectedTagNameException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    UnexpectedTagNameException,
+)
 from selenium.webdriver.common.by import By
 
 
@@ -33,7 +35,9 @@ class Select:
             Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
-            raise UnexpectedTagNameException(f"Select only works on <select> elements, not on {webelement.tag_name}")
+            raise UnexpectedTagNameException(
+                f"Select only works on <select> elements, not on {webelement.tag_name}"
+            )
         self._el = webelement
         multi = self._el.get_dom_attribute("multiple")
         self.is_multiple = multi and multi != "false"
@@ -131,7 +135,9 @@ class Select:
                     matched = True
 
         if not matched:
-            raise NoSuchElementException(f"Could not locate element with visible text: {text}")
+            raise NoSuchElementException(
+                f"Could not locate element with visible text: {text}"
+            )
 
     def deselect_all(self) -> None:
         """Clear all selected entries.
@@ -141,7 +147,9 @@ class Select:
         multiple selections
         """
         if not self.is_multiple:
-            raise NotImplementedError("You may only deselect all options of a multi-select")
+            raise NotImplementedError(
+                "You may only deselect all options of a multi-select"
+            )
         for opt in self.options:
             self._unset_selected(opt)
 
@@ -165,7 +173,9 @@ class Select:
             self._unset_selected(opt)
             matched = True
         if not matched:
-            raise NoSuchElementException(f"Could not locate element with value: {value}")
+            raise NoSuchElementException(
+                f"Could not locate element with value: {value}"
+            )
 
     def deselect_by_index(self, index):
         """Deselect the option at the given index. This is done by examining
@@ -202,7 +212,9 @@ class Select:
             self._unset_selected(opt)
             matched = True
         if not matched:
-            raise NoSuchElementException(f"Could not locate element with visible text: {text}")
+            raise NoSuchElementException(
+                f"Could not locate element with visible text: {text}"
+            )
 
     def _set_selected(self, option) -> None:
         if not option.is_selected():

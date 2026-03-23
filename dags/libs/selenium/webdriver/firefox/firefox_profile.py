@@ -54,15 +54,20 @@ class FirefoxProfile:
            directory when object is created.
         """
         warnings.warn(
-            "firefox_profile has been deprecated, please use an Options object", DeprecationWarning, stacklevel=2
+            "firefox_profile has been deprecated, please use an Options object",
+            DeprecationWarning,
+            stacklevel=2,
         )
         if not FirefoxProfile.DEFAULT_PREFERENCES:
             with open(
-                os.path.join(os.path.dirname(__file__), WEBDRIVER_PREFERENCES), encoding="utf-8"
+                os.path.join(os.path.dirname(__file__), WEBDRIVER_PREFERENCES),
+                encoding="utf-8",
             ) as default_prefs:
                 FirefoxProfile.DEFAULT_PREFERENCES = json.load(default_prefs)
 
-        self.default_preferences = copy.deepcopy(FirefoxProfile.DEFAULT_PREFERENCES["mutable"])
+        self.default_preferences = copy.deepcopy(
+            FirefoxProfile.DEFAULT_PREFERENCES["mutable"]
+        )
         self.profile_dir = profile_directory
         self.tempfolder = None
         if not self.profile_dir:
@@ -71,7 +76,9 @@ class FirefoxProfile:
             self.tempfolder = tempfile.mkdtemp()
             newprof = os.path.join(self.tempfolder, "webdriver-py-profilecopy")
             shutil.copytree(
-                self.profile_dir, newprof, ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock")
+                self.profile_dir,
+                newprof,
+                ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"),
             )
             self.profile_dir = newprof
             os.chmod(self.profile_dir, 0o755)
@@ -176,7 +183,9 @@ class FirefoxProfile:
                 for usr in f:
                     matches = pref_pattern.search(usr)
                     try:
-                        self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
+                        self.default_preferences[matches.group(1)] = json.loads(
+                            matches.group(2)
+                        )
                     except Exception:
                         warnings.warn(
                             f"(skipping) failed to json.loads existing preference: {matches.group(1) + matches.group(2)}"
@@ -293,7 +302,9 @@ class FirefoxProfile:
                 try:
                     compressed_file = zipfile.ZipFile(addon_path, "r")
                     if "manifest.json" in compressed_file.namelist():
-                        return parse_manifest_json(compressed_file.read("manifest.json"))
+                        return parse_manifest_json(
+                            compressed_file.read("manifest.json")
+                        )
 
                     manifest = compressed_file.read("install.rdf")
                 finally:
@@ -304,10 +315,14 @@ class FirefoxProfile:
                     with open(manifest_json_filename, encoding="utf-8") as f:
                         return parse_manifest_json(f.read())
 
-                with open(os.path.join(addon_path, "install.rdf"), encoding="utf-8") as f:
+                with open(
+                    os.path.join(addon_path, "install.rdf"), encoding="utf-8"
+                ) as f:
                     manifest = f.read()
             else:
-                raise OSError(f"Add-on path is neither an XPI nor a directory: {addon_path}")
+                raise OSError(
+                    f"Add-on path is neither an XPI nor a directory: {addon_path}"
+                )
         except (OSError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 

@@ -46,9 +46,8 @@ from .util.request import _TYPE_BODY_POSITION, set_file_position
 from .util.retry import Retry
 from .util.ssl_match_hostname import CertificateError
 from .util.timeout import _DEFAULT_TIMEOUT, _TYPE_DEFAULT, Timeout
-from .util.url import Url, _encode_target
+from .util.url import Url, _encode_target, parse_url
 from .util.url import _normalize_host as normalize_host
-from .util.url import parse_url
 from .util.util import to_str
 
 if typing.TYPE_CHECKING:
@@ -170,9 +169,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
     """
 
     scheme = "http"
-    ConnectionCls: (
-        type[BaseHTTPConnection] | type[BaseHTTPSConnection]
-    ) = HTTPConnection
+    ConnectionCls: type[BaseHTTPConnection] | type[BaseHTTPSConnection] = HTTPConnection
 
     def __init__(
         self,
@@ -1137,13 +1134,11 @@ def connection_from_url(url: str, **kw: typing.Any) -> HTTPConnectionPool:
 
 
 @typing.overload
-def _normalize_host(host: None, scheme: str | None) -> None:
-    ...
+def _normalize_host(host: None, scheme: str | None) -> None: ...
 
 
 @typing.overload
-def _normalize_host(host: str, scheme: str | None) -> str:
-    ...
+def _normalize_host(host: str, scheme: str | None) -> str: ...
 
 
 def _normalize_host(host: str | None, scheme: str | None) -> str | None:

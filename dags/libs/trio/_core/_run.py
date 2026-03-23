@@ -2929,21 +2929,33 @@ if sys.platform == "win32":
     from ._generated_io_windows import *
     from ._io_windows import (
         EventResult as EventResult,
+    )
+    from ._io_windows import (
         WindowsIOManager as TheIOManager,
+    )
+    from ._io_windows import (
         _WindowsStatistics as IOStatistics,
     )
 elif sys.platform == "linux" or (not TYPE_CHECKING and hasattr(select, "epoll")):
     from ._generated_io_epoll import *
     from ._io_epoll import (
         EpollIOManager as TheIOManager,
+    )
+    from ._io_epoll import (
         EventResult as EventResult,
+    )
+    from ._io_epoll import (
         _EpollStatistics as IOStatistics,
     )
 elif TYPE_CHECKING or hasattr(select, "kqueue"):
     from ._generated_io_kqueue import *
     from ._io_kqueue import (
         EventResult as EventResult,
+    )
+    from ._io_kqueue import (
         KqueueIOManager as TheIOManager,
+    )
+    from ._io_kqueue import (
         _KqueueStatistics as IOStatistics,
     )
 else:  # pragma: no cover

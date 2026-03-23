@@ -126,4 +126,6 @@ class Options(ArgOptions):
         :Args:
          - value: boolean value
         """
-        self.set_capability("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")
+        self.set_capability(
+            "browserName", self.SAFARI_TECH_PREVIEW if value else "safari"
+        )

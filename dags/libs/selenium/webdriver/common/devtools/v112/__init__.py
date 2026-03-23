@@ -2,53 +2,54 @@
 #
 # This file is generated from the CDP specification. If you need to make
 # changes, edit the generator and regenerate all of the modules.
-from . import accessibility
-from . import animation
-from . import audits
-from . import background_service
-from . import browser
-from . import css
-from . import cache_storage
-from . import cast
-from . import console
-from . import dom
-from . import dom_debugger
-from . import dom_snapshot
-from . import dom_storage
-from . import database
-from . import debugger
-from . import device_access
-from . import device_orientation
-from . import emulation
-from . import event_breakpoints
-from . import fetch
-from . import headless_experimental
-from . import heap_profiler
-from . import io
-from . import indexed_db
-from . import input_
-from . import inspector
-from . import layer_tree
-from . import log
-from . import media
-from . import memory
-from . import network
-from . import overlay
-from . import page
-from . import performance
-from . import performance_timeline
-from . import preload
-from . import profiler
-from . import runtime
-from . import schema
-from . import security
-from . import service_worker
-from . import storage
-from . import system_info
-from . import target
-from . import tethering
-from . import tracing
-from . import web_audio
-from . import web_authn
-from . import util
-
+from . import (
+    accessibility,
+    animation,
+    audits,
+    background_service,
+    browser,
+    cache_storage,
+    cast,
+    console,
+    css,
+    database,
+    debugger,
+    device_access,
+    device_orientation,
+    dom,
+    dom_debugger,
+    dom_snapshot,
+    dom_storage,
+    emulation,
+    event_breakpoints,
+    fetch,
+    headless_experimental,
+    heap_profiler,
+    indexed_db,
+    input_,
+    inspector,
+    io,
+    layer_tree,
+    log,
+    media,
+    memory,
+    network,
+    overlay,
+    page,
+    performance,
+    performance_timeline,
+    preload,
+    profiler,
+    runtime,
+    schema,
+    security,
+    service_worker,
+    storage,
+    system_info,
+    target,
+    tethering,
+    tracing,
+    util,
+    web_audio,
+    web_authn,
+)

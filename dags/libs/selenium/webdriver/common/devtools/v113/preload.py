@@ -5,19 +5,20 @@
 #
 # CDP domain: Preload (experimental)
 from __future__ import annotations
-from .util import event_class, T_JSON_DICT
-from dataclasses import dataclass
+
 import enum
 import typing
-from . import dom
-from . import network
-from . import page
+from dataclasses import dataclass
+
+from . import dom, network, page
+from .util import T_JSON_DICT, event_class
 
 
 class RuleSetId(str):
-    '''
+    """
     Unique id
-    '''
+    """
+
     def to_json(self) -> str:
         return self
 
@@ -26,14 +27,15 @@ class RuleSetId(str):
         return cls(json)
 
     def __repr__(self):
-        return 'RuleSetId({})'.format(super().__repr__())
+        return "RuleSetId({})".format(super().__repr__())
 
 
 @dataclass
 class RuleSet:
-    '''
+    """
     Corresponds to SpeculationRuleSet
-    '''
+    """
+
     id_: RuleSetId
 
     #: Identifies a document which the rule set is associated with.
@@ -42,7 +44,7 @@ class RuleSet:
     #: Source text of JSON representing the rule set. If it comes from
     #: ``script`` tag, it is the textContent of the node. Note that it is
     #: a JSON for valid case.
-    #: 
+    #:
     #: See also:
     #: - https://wicg.github.io/nav-speculation/speculation-rules.html
     #: - https://github.com/WICG/nav-speculation/blob/main/triggers.md
@@ -57,23 +59,25 @@ class RuleSet:
 
     def to_json(self):
         json = dict()
-        json['id'] = self.id_.to_json()
-        json['loaderId'] = self.loader_id.to_json()
-        json['sourceText'] = self.source_text
+        json["id"] = self.id_.to_json()
+        json["loaderId"] = self.loader_id.to_json()
+        json["sourceText"] = self.source_text
         if self.error_type is not None:
-            json['errorType'] = self.error_type.to_json()
+            json["errorType"] = self.error_type.to_json()
         if self.error_message is not None:
-            json['errorMessage'] = self.error_message
+            json["errorMessage"] = self.error_message
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            id_=RuleSetId.from_json(json['id']),
-            loader_id=network.LoaderId.from_json(json['loaderId']),
-            source_text=str(json['sourceText']),
-            error_type=RuleSetErrorType.from_json(json['errorType']) if 'errorType' in json else None,
-            error_message=str(json['errorMessage']) if 'errorMessage' in json else None,
+            id_=RuleSetId.from_json(json["id"]),
+            loader_id=network.LoaderId.from_json(json["loaderId"]),
+            source_text=str(json["sourceText"]),
+            error_type=RuleSetErrorType.from_json(json["errorType"])
+            if "errorType" in json
+            else None,
+            error_message=str(json["errorMessage"]) if "errorMessage" in json else None,
         )
 
 
@@ -90,11 +94,12 @@ class RuleSetErrorType(enum.Enum):
 
 
 class SpeculationAction(enum.Enum):
-    '''
+    """
     The type of preloading attempted. It corresponds to
     mojom::SpeculationAction (although PrefetchWithSubresources is omitted as it
     isn't being used by clients).
-    '''
+    """
+
     PREFETCH = "Prefetch"
     PRERENDER = "Prerender"
 
@@ -107,10 +112,11 @@ class SpeculationAction(enum.Enum):
 
 
 class SpeculationTargetHint(enum.Enum):
-    '''
+    """
     Corresponds to mojom::SpeculationTargetHint.
     See https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints
-    '''
+    """
+
     BLANK = "Blank"
     SELF = "Self"
 
@@ -124,14 +130,15 @@ class SpeculationTargetHint(enum.Enum):
 
 @dataclass
 class PreloadingAttemptKey:
-    '''
+    """
     A key that identifies a preloading attempt.
 
     The url used is the url specified by the trigger (i.e. the initial URL), and
     not the final url that is navigated to. For example, prerendering allows
     same-origin main frame navigations during the attempt, but the attempt is
     still keyed with the initial URL.
-    '''
+    """
+
     loader_id: network.LoaderId
 
     action: SpeculationAction
@@ -142,32 +149,35 @@ class PreloadingAttemptKey:
 
     def to_json(self):
         json = dict()
-        json['loaderId'] = self.loader_id.to_json()
-        json['action'] = self.action.to_json()
-        json['url'] = self.url
+        json["loaderId"] = self.loader_id.to_json()
+        json["action"] = self.action.to_json()
+        json["url"] = self.url
         if self.target_hint is not None:
-            json['targetHint'] = self.target_hint.to_json()
+            json["targetHint"] = self.target_hint.to_json()
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            loader_id=network.LoaderId.from_json(json['loaderId']),
-            action=SpeculationAction.from_json(json['action']),
-            url=str(json['url']),
-            target_hint=SpeculationTargetHint.from_json(json['targetHint']) if 'targetHint' in json else None,
+            loader_id=network.LoaderId.from_json(json["loaderId"]),
+            action=SpeculationAction.from_json(json["action"]),
+            url=str(json["url"]),
+            target_hint=SpeculationTargetHint.from_json(json["targetHint"])
+            if "targetHint" in json
+            else None,
         )
 
 
 @dataclass
 class PreloadingAttemptSource:
-    '''
+    """
     Lists sources for a preloading attempt, specifically the ids of rule sets
     that had a speculation rule that triggered the attempt, and the
     BackendNodeIds of <a href> or <area href> elements that triggered the
     attempt (in the case of attempts triggered by a document rule). It is
     possible for mulitple rule sets and links to trigger a single attempt.
-    '''
+    """
+
     key: PreloadingAttemptKey
 
     rule_set_ids: typing.List[RuleSetId]
@@ -176,24 +186,25 @@ class PreloadingAttemptSource:
 
     def to_json(self):
         json = dict()
-        json['key'] = self.key.to_json()
-        json['ruleSetIds'] = [i.to_json() for i in self.rule_set_ids]
-        json['nodeIds'] = [i.to_json() for i in self.node_ids]
+        json["key"] = self.key.to_json()
+        json["ruleSetIds"] = [i.to_json() for i in self.rule_set_ids]
+        json["nodeIds"] = [i.to_json() for i in self.node_ids]
         return json
 
     @classmethod
     def from_json(cls, json):
         return cls(
-            key=PreloadingAttemptKey.from_json(json['key']),
-            rule_set_ids=[RuleSetId.from_json(i) for i in json['ruleSetIds']],
-            node_ids=[dom.BackendNodeId.from_json(i) for i in json['nodeIds']],
+            key=PreloadingAttemptKey.from_json(json["key"]),
+            rule_set_ids=[RuleSetId.from_json(i) for i in json["ruleSetIds"]],
+            node_ids=[dom.BackendNodeId.from_json(i) for i in json["nodeIds"]],
         )
 
 
 class PrerenderFinalStatus(enum.Enum):
-    '''
+    """
     List of FinalStatus reasons for Prerender2.
-    '''
+    """
+
     ACTIVATED = "Activated"
     DESTROYED = "Destroyed"
     LOW_END_DEVICE = "LowEndDevice"
@@ -222,7 +233,9 @@ class PrerenderFinalStatus(enum.Enum):
     AUDIO_OUTPUT_DEVICE_REQUESTED = "AudioOutputDeviceRequested"
     MIXED_CONTENT = "MixedContent"
     TRIGGER_BACKGROUNDED = "TriggerBackgrounded"
-    EMBEDDER_TRIGGERED_AND_CROSS_ORIGIN_REDIRECTED = "EmbedderTriggeredAndCrossOriginRedirected"
+    EMBEDDER_TRIGGERED_AND_CROSS_ORIGIN_REDIRECTED = (
+        "EmbedderTriggeredAndCrossOriginRedirected"
+    )
     MEMORY_LIMIT_EXCEEDED = "MemoryLimitExceeded"
     FAIL_TO_GET_MEMORY_USAGE = "FailToGetMemoryUsage"
     DATA_SAVER_ENABLED = "DataSaverEnabled"
@@ -232,26 +245,44 @@ class PrerenderFinalStatus(enum.Enum):
     START_FAILED = "StartFailed"
     TIMEOUT_BACKGROUNDED = "TimeoutBackgrounded"
     CROSS_SITE_REDIRECT_IN_INITIAL_NAVIGATION = "CrossSiteRedirectInInitialNavigation"
-    CROSS_SITE_NAVIGATION_IN_INITIAL_NAVIGATION = "CrossSiteNavigationInInitialNavigation"
-    SAME_SITE_CROSS_ORIGIN_REDIRECT_NOT_OPT_IN_IN_INITIAL_NAVIGATION = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation"
-    SAME_SITE_CROSS_ORIGIN_NAVIGATION_NOT_OPT_IN_IN_INITIAL_NAVIGATION = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation"
+    CROSS_SITE_NAVIGATION_IN_INITIAL_NAVIGATION = (
+        "CrossSiteNavigationInInitialNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_REDIRECT_NOT_OPT_IN_IN_INITIAL_NAVIGATION = (
+        "SameSiteCrossOriginRedirectNotOptInInInitialNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_NAVIGATION_NOT_OPT_IN_IN_INITIAL_NAVIGATION = (
+        "SameSiteCrossOriginNavigationNotOptInInInitialNavigation"
+    )
     ACTIVATION_NAVIGATION_PARAMETER_MISMATCH = "ActivationNavigationParameterMismatch"
     ACTIVATED_IN_BACKGROUND = "ActivatedInBackground"
     EMBEDDER_HOST_DISALLOWED = "EmbedderHostDisallowed"
-    ACTIVATION_NAVIGATION_DESTROYED_BEFORE_SUCCESS = "ActivationNavigationDestroyedBeforeSuccess"
+    ACTIVATION_NAVIGATION_DESTROYED_BEFORE_SUCCESS = (
+        "ActivationNavigationDestroyedBeforeSuccess"
+    )
     TAB_CLOSED_BY_USER_GESTURE = "TabClosedByUserGesture"
     TAB_CLOSED_WITHOUT_USER_GESTURE = "TabClosedWithoutUserGesture"
-    PRIMARY_MAIN_FRAME_RENDERER_PROCESS_CRASHED = "PrimaryMainFrameRendererProcessCrashed"
+    PRIMARY_MAIN_FRAME_RENDERER_PROCESS_CRASHED = (
+        "PrimaryMainFrameRendererProcessCrashed"
+    )
     PRIMARY_MAIN_FRAME_RENDERER_PROCESS_KILLED = "PrimaryMainFrameRendererProcessKilled"
     ACTIVATION_FRAME_POLICY_NOT_COMPATIBLE = "ActivationFramePolicyNotCompatible"
     PRELOADING_DISABLED = "PreloadingDisabled"
     BATTERY_SAVER_ENABLED = "BatterySaverEnabled"
     ACTIVATED_DURING_MAIN_FRAME_NAVIGATION = "ActivatedDuringMainFrameNavigation"
     PRELOADING_UNSUPPORTED_BY_WEB_CONTENTS = "PreloadingUnsupportedByWebContents"
-    CROSS_SITE_REDIRECT_IN_MAIN_FRAME_NAVIGATION = "CrossSiteRedirectInMainFrameNavigation"
-    CROSS_SITE_NAVIGATION_IN_MAIN_FRAME_NAVIGATION = "CrossSiteNavigationInMainFrameNavigation"
-    SAME_SITE_CROSS_ORIGIN_REDIRECT_NOT_OPT_IN_IN_MAIN_FRAME_NAVIGATION = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"
-    SAME_SITE_CROSS_ORIGIN_NAVIGATION_NOT_OPT_IN_IN_MAIN_FRAME_NAVIGATION = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"
+    CROSS_SITE_REDIRECT_IN_MAIN_FRAME_NAVIGATION = (
+        "CrossSiteRedirectInMainFrameNavigation"
+    )
+    CROSS_SITE_NAVIGATION_IN_MAIN_FRAME_NAVIGATION = (
+        "CrossSiteNavigationInMainFrameNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_REDIRECT_NOT_OPT_IN_IN_MAIN_FRAME_NAVIGATION = (
+        "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_NAVIGATION_NOT_OPT_IN_IN_MAIN_FRAME_NAVIGATION = (
+        "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"
+    )
 
     def to_json(self):
         return self.value
@@ -262,10 +293,11 @@ class PrerenderFinalStatus(enum.Enum):
 
 
 class PreloadingStatus(enum.Enum):
-    '''
+    """
     Preloading status values, see also PreloadingTriggeringOutcome. This
     status is shared by prefetchStatusUpdated and prerenderStatusUpdated.
-    '''
+    """
+
     PENDING = "Pending"
     RUNNING = "Running"
     READY = "Ready"
@@ -281,55 +313,53 @@ class PreloadingStatus(enum.Enum):
         return cls(json)
 
 
-def enable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
+def enable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
 
     cmd_dict: T_JSON_DICT = {
-        'method': 'Preload.enable',
+        "method": "Preload.enable",
     }
     json = yield cmd_dict
 
 
-def disable() -> typing.Generator[T_JSON_DICT,T_JSON_DICT,None]:
+def disable() -> typing.Generator[T_JSON_DICT, T_JSON_DICT, None]:
 
     cmd_dict: T_JSON_DICT = {
-        'method': 'Preload.disable',
+        "method": "Preload.disable",
     }
     json = yield cmd_dict
 
 
-@event_class('Preload.ruleSetUpdated')
+@event_class("Preload.ruleSetUpdated")
 @dataclass
 class RuleSetUpdated:
-    '''
+    """
     Upsert. Currently, it is only emitted when a rule set added.
-    '''
+    """
+
     rule_set: RuleSet
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> RuleSetUpdated:
-        return cls(
-            rule_set=RuleSet.from_json(json['ruleSet'])
-        )
+        return cls(rule_set=RuleSet.from_json(json["ruleSet"]))
 
 
-@event_class('Preload.ruleSetRemoved')
+@event_class("Preload.ruleSetRemoved")
 @dataclass
 class RuleSetRemoved:
     id_: RuleSetId
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> RuleSetRemoved:
-        return cls(
-            id_=RuleSetId.from_json(json['id'])
-        )
+        return cls(id_=RuleSetId.from_json(json["id"]))
 
 
-@event_class('Preload.prerenderAttemptCompleted')
+@event_class("Preload.prerenderAttemptCompleted")
 @dataclass
 class PrerenderAttemptCompleted:
-    '''
+    """
     Fired when a prerender attempt is completed.
-    '''
+    """
+
     key: PreloadingAttemptKey
     #: The frame id of the frame initiating prerendering.
     initiating_frame_id: page.FrameId
@@ -342,20 +372,23 @@ class PrerenderAttemptCompleted:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> PrerenderAttemptCompleted:
         return cls(
-            key=PreloadingAttemptKey.from_json(json['key']),
-            initiating_frame_id=page.FrameId.from_json(json['initiatingFrameId']),
-            prerendering_url=str(json['prerenderingUrl']),
-            final_status=PrerenderFinalStatus.from_json(json['finalStatus']),
-            disallowed_api_method=str(json['disallowedApiMethod']) if 'disallowedApiMethod' in json else None
+            key=PreloadingAttemptKey.from_json(json["key"]),
+            initiating_frame_id=page.FrameId.from_json(json["initiatingFrameId"]),
+            prerendering_url=str(json["prerenderingUrl"]),
+            final_status=PrerenderFinalStatus.from_json(json["finalStatus"]),
+            disallowed_api_method=str(json["disallowedApiMethod"])
+            if "disallowedApiMethod" in json
+            else None,
         )
 
 
-@event_class('Preload.prefetchStatusUpdated')
+@event_class("Preload.prefetchStatusUpdated")
 @dataclass
 class PrefetchStatusUpdated:
-    '''
+    """
     Fired when a prefetch attempt is updated.
-    '''
+    """
+
     key: PreloadingAttemptKey
     #: The frame id of the frame initiating prefetch.
     initiating_frame_id: page.FrameId
@@ -365,19 +398,20 @@ class PrefetchStatusUpdated:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> PrefetchStatusUpdated:
         return cls(
-            key=PreloadingAttemptKey.from_json(json['key']),
-            initiating_frame_id=page.FrameId.from_json(json['initiatingFrameId']),
-            prefetch_url=str(json['prefetchUrl']),
-            status=PreloadingStatus.from_json(json['status'])
+            key=PreloadingAttemptKey.from_json(json["key"]),
+            initiating_frame_id=page.FrameId.from_json(json["initiatingFrameId"]),
+            prefetch_url=str(json["prefetchUrl"]),
+            status=PreloadingStatus.from_json(json["status"]),
         )
 
 
-@event_class('Preload.prerenderStatusUpdated')
+@event_class("Preload.prerenderStatusUpdated")
 @dataclass
 class PrerenderStatusUpdated:
-    '''
+    """
     Fired when a prerender attempt is updated.
-    '''
+    """
+
     key: PreloadingAttemptKey
     #: The frame id of the frame initiating prerender.
     initiating_frame_id: page.FrameId
@@ -387,25 +421,29 @@ class PrerenderStatusUpdated:
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> PrerenderStatusUpdated:
         return cls(
-            key=PreloadingAttemptKey.from_json(json['key']),
-            initiating_frame_id=page.FrameId.from_json(json['initiatingFrameId']),
-            prerendering_url=str(json['prerenderingUrl']),
-            status=PreloadingStatus.from_json(json['status'])
+            key=PreloadingAttemptKey.from_json(json["key"]),
+            initiating_frame_id=page.FrameId.from_json(json["initiatingFrameId"]),
+            prerendering_url=str(json["prerenderingUrl"]),
+            status=PreloadingStatus.from_json(json["status"]),
         )
 
 
-@event_class('Preload.preloadingAttemptSourcesUpdated')
+@event_class("Preload.preloadingAttemptSourcesUpdated")
 @dataclass
 class PreloadingAttemptSourcesUpdated:
-    '''
+    """
     Send a list of sources for all preloading attempts in a document.
-    '''
+    """
+
     loader_id: network.LoaderId
     preloading_attempt_sources: typing.List[PreloadingAttemptSource]
 
     @classmethod
     def from_json(cls, json: T_JSON_DICT) -> PreloadingAttemptSourcesUpdated:
         return cls(
-            loader_id=network.LoaderId.from_json(json['loaderId']),
-            preloading_attempt_sources=[PreloadingAttemptSource.from_json(i) for i in json['preloadingAttemptSources']]
+            loader_id=network.LoaderId.from_json(json["loaderId"]),
+            preloading_attempt_sources=[
+                PreloadingAttemptSource.from_json(i)
+                for i in json["preloadingAttemptSources"]
+            ],
         )

@@ -73,25 +73,25 @@ class _ExceptionInfo(Generic[MatchE]):
     @property
     def type(self) -> type[MatchE]:
         """The exception class."""
-        assert (
-            self._excinfo is not None
-        ), ".type can only be used after the context manager exits"
+        assert self._excinfo is not None, (
+            ".type can only be used after the context manager exits"
+        )
         return self._excinfo[0]
 
     @property
     def value(self) -> MatchE:
         """The exception value."""
-        assert (
-            self._excinfo is not None
-        ), ".value can only be used after the context manager exits"
+        assert self._excinfo is not None, (
+            ".value can only be used after the context manager exits"
+        )
         return self._excinfo[1]
 
     @property
     def tb(self) -> types.TracebackType:
         """The exception raw traceback."""
-        assert (
-            self._excinfo is not None
-        ), ".tb can only be used after the context manager exits"
+        assert self._excinfo is not None, (
+            ".tb can only be used after the context manager exits"
+        )
         return self._excinfo[2]
 
     def exconly(self, tryshort: bool = False) -> str:
@@ -252,7 +252,7 @@ class Matcher(Generic[MatchE]):
             )
         if self.check is not None:
             reqs.append(f"check={self.check!r}")
-        return f'Matcher({", ".join(reqs)})'
+        return f"Matcher({', '.join(reqs)})"
 
 
 # typing this has been somewhat of a nightmare, with the primary difficulty making
@@ -535,12 +535,12 @@ class RaisesGroup(ContextManager[ExceptionInfo[BaseExceptionGroup[E]]], SuperCla
         exc_tb: types.TracebackType | None,
     ) -> bool:
         __tracebackhide__ = True
-        assert (
-            exc_type is not None
-        ), f"DID NOT RAISE any exception, expected {self.expected_type()}"
-        assert (
-            self.excinfo is not None
-        ), "Internal error - should have been constructed in __enter__"
+        assert exc_type is not None, (
+            f"DID NOT RAISE any exception, expected {self.expected_type()}"
+        )
+        assert self.excinfo is not None, (
+            "Internal error - should have been constructed in __enter__"
+        )
 
         if not self.matches(exc_val):
             return False

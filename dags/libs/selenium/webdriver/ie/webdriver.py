@@ -22,8 +22,7 @@ from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
@@ -69,25 +68,40 @@ class WebDriver(RemoteWebDriver):
         """
         if executable_path != "IEDriverServer.exe":
             warnings.warn(
-                "executable_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "executable_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         if capabilities:
             warnings.warn(
-                "capabilities has been deprecated, please pass in an Options object." "This field will be ignored.",
+                "capabilities has been deprecated, please pass in an Options object."
+                "This field will be ignored.",
                 DeprecationWarning,
                 stacklevel=2,
             )
         if port != DEFAULT_PORT:
-            warnings.warn("port has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "port has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if timeout != DEFAULT_TIMEOUT:
             warnings.warn(
-                "timeout has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "timeout has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         if host != DEFAULT_HOST:
-            warnings.warn("host has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "host has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if log_level != DEFAULT_LOG_LEVEL:
             warnings.warn(
-                "log_level has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "log_level has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn(
@@ -104,7 +118,9 @@ class WebDriver(RemoteWebDriver):
             )
         if keep_alive != DEFAULT_KEEP_ALIVE:
             warnings.warn(
-                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "keep_alive has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         else:
             keep_alive = True
@@ -121,13 +137,21 @@ class WebDriver(RemoteWebDriver):
             self.iedriver = service
         else:
             self.iedriver = Service(
-                executable_path, port=self.port, host=self.host, log_level=log_level, log_file=service_log_path
+                executable_path,
+                port=self.port,
+                host=self.host,
+                log_level=log_level,
+                log_file=service_log_path,
             )
 
         self.iedriver.path = DriverFinder.get_path(self.iedriver, options)
         self.iedriver.start()
 
-        super().__init__(command_executor=self.iedriver.service_url, options=options, keep_alive=keep_alive)
+        super().__init__(
+            command_executor=self.iedriver.service_url,
+            options=options,
+            keep_alive=keep_alive,
+        )
         self._is_remote = False
 
     def quit(self) -> None:

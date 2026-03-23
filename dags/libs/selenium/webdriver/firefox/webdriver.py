@@ -31,8 +31,7 @@ from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
-from .service import DEFAULT_EXECUTABLE_PATH
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +111,9 @@ class WebDriver(RemoteWebDriver):
 
         if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn(
-                "executable_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "executable_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         if capabilities or desired_capabilities:
             warnings.warn(
@@ -122,7 +123,9 @@ class WebDriver(RemoteWebDriver):
             )
         if firefox_binary:
             warnings.warn(
-                "firefox_binary has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "firefox_binary has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
         self.binary = None
         if firefox_profile:
@@ -135,7 +138,9 @@ class WebDriver(RemoteWebDriver):
 
         if log_path != DEFAULT_LOG_PATH:
             warnings.warn(
-                "log_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "log_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
         # Service Arguments being deprecated.
@@ -147,7 +152,9 @@ class WebDriver(RemoteWebDriver):
             )
         if service_args:
             warnings.warn(
-                "service_args has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+                "service_args has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
             )
 
         self.service = service
@@ -187,16 +194,22 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
-        if not capabilities.get("acceptInsecureCerts") or not options.accept_insecure_certs:
+        if (
+            not capabilities.get("acceptInsecureCerts")
+            or not options.accept_insecure_certs
+        ):
             options.accept_insecure_certs = False
 
         if not self.service:
-            self.service = Service(executable_path, service_args=service_args, log_path=service_log_path)
+            self.service = Service(
+                executable_path, service_args=service_args, log_path=service_log_path
+            )
         self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
         executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url, ignore_proxy=options._ignore_local_proxy
+            remote_server_addr=self.service.service_url,
+            ignore_proxy=options._ignore_local_proxy,
         )
         super().__init__(command_executor=executor, options=options, keep_alive=True)
 
@@ -234,7 +247,9 @@ class WebDriver(RemoteWebDriver):
                 if hasattr(self.binary._log_file, "close"):
                     self.binary._log_file.close()
         except Exception:
-            logger.exception("Unable to close open file handle for firefox binary log file.")
+            logger.exception(
+                "Unable to close open file handle for firefox binary log file."
+            )
 
     @property
     def firefox_profile(self):
@@ -324,7 +339,8 @@ class WebDriver(RemoteWebDriver):
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
-                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                "name used for saved screenshot does not match file "
+                "type. It should end with a `.png` extension",
                 UserWarning,
             )
         png = self.get_full_page_screenshot_as_png()
@@ -362,7 +378,9 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_png()
         """
-        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode("ascii"))
+        return base64.b64decode(
+            self.get_full_page_screenshot_as_base64().encode("ascii")
+        )
 
     def get_full_page_screenshot_as_base64(self) -> str:
         """Gets the full document screenshot of the current window as a base64
