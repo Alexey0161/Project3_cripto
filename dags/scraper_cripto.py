@@ -25,7 +25,7 @@ libs_path = os.path.join(dags_folder, "libs")
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 
-# Добавляем путь к папке logic (она же у вас в dags лежит?)
+# Добавляем путь к папке logic (она лежит в dags )
 if dags_folder not in sys.path:
     sys.path.insert(0, dags_folder)
 # Эти импорты могут подчеркиваться желтым в VS Code - это нормально!
@@ -33,7 +33,7 @@ try:
     from logic.clean_name import clean_name
     from logic.clean_price import clean_price
     from logic.clean_ticker import clean_ticker
-
+    from bd_sqlite.database_test import ensure_db_exists
     # ВАЖНО: убедиться, что пути к  модулям верны внутри контейнера
     from logic.insert_to_db import insert_to_db
     from selenium import webdriver
@@ -50,7 +50,7 @@ default_args = {
     "retry_delay": timedelta(minutes=5),
 }
 
-
+ensure_db_exists()
 def run_crypto_scraper_logic():
     """Ваша основная логика скрапинга"""
     print("--- DEBUG INFO START ---")
@@ -126,11 +126,9 @@ if AIRFLOW_AVAILABLE:
             "crypto_market_scraper_v1",
             default_args=default_args,
             description="My beautiful crypto scraper",
-            schedule_interval=timedelta(
-                minutes=10
-            ),  # Ставим 10 минут! 🚀schedule_interval=timedelta(hours=4), #schedule_interval=timedelta(days=1),
-            catchup=False,
-        ) as dag
+            schedule_interval=timedelta(minutes=2),  # Ставим 10 минут! 🚀schedule_interval=timedelta(hours=4), #schedule_interval=timedelta(days=1),
+            catchup=False
+        ) 
     ):
         # ИСПРАВЛЕНО: Создаем задачу, которая будет вызывать  функцию
         task_run_scraper = PythonOperator(
