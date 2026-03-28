@@ -130,13 +130,13 @@ if AIRFLOW_AVAILABLE:
             catchup=False
         ) 
     ):
-        # ИСПРАВЛЕНО: Создаем задачу, которая будет вызывать  функцию
+        # Создаем задачу, которая будет вызывать  функцию
         task_run_scraper = PythonOperator(
             task_id="run_crypto_scraper_task",
             python_callable=run_crypto_scraper_logic,
         )
 else:
-    # Если мы не в Airflow, просто запускаем функцию при старте файла
+    # Если не Airflow, просто запускаем функцию при старте файла
     if __name__ == "__main__":
         from datetime import datetime
 
