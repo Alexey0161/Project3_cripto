@@ -14,6 +14,6 @@
 
 2. файл visualizer_crypto_v.01.py, который выводит графики и таблицу с аналитическими данными. 
 2.1. Запуск функции построения графиков и вывода аналитики осуществляется из папки visualisations командой:
-python visualizer_crypto_v.01.py
+python visualizer_crypto_v.01.py 
 
 
