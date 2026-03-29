@@ -64,7 +64,7 @@ def create_artifacts(df):
     plt.savefig("crypto_chart_final.png")
     print("График сохранен: crypto_chart_final.png")
 
-# --- АРТЕФАКТ №3: Индивидуальные графики  ---
+# --- АРТЕФАКТ №4: Индивидуальные графики  ---
     fig,axes = plt.subplots(len(top_coins), 1, figsize=(15, 12), sharex=True)
     
     for i, coin in enumerate(top_coins):
@@ -83,7 +83,7 @@ def create_artifacts(df):
     plt.savefig("crypto_micro_dynamics.png")
     print("Дополнительный артефакт сохранен: crypto_micro_dynamics.png")
 
-    # --- 4. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
+    # --- 5. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
     # report1 = (df.groupby("coin_name")["price"].agg("max") - df.groupby("coin_name")["price"].agg("min"))/df.groupby("coin_name")["price"].agg("count")*2 
     # report = df.groupby("coin_name")["price"].agg(["mean", "min", "max",  "count"]).reset_index()
     
@@ -93,12 +93,12 @@ def create_artifacts(df):
    
     # report.columns = ["Валюта", "Средняя цена", "Минимум", "Максимум", "Кол-во замеров"]
     
-    # --- 4. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
+    # --- 5. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
     report1 = (df.groupby("coin_name")["price"].agg("max") -
            df.groupby("coin_name")["price"].agg("min")) / \
           df.groupby("coin_name")["price"].agg("count") * 2
 
-    # Преобразуем report1 в DataFrame и переименовываем колонки
+    # Шаг 1: Преобразуем report1 в DataFrame и переименовываем колонки
     temp_change = report1.reset_index()
     temp_change.columns = ['Валюта', 'Темп изменения цены']
 
@@ -113,7 +113,7 @@ def create_artifacts(df):
     # Шаг 3: объединяем таблицы
     final_report = pd.merge(report, temp_change, on='Валюта', how='left')
 
-    # Выводим результат
+    # Шаг 4: Выводим результат
     print(final_report)
     final_report.to_csv("crypto_report_final.csv", index=False, encoding="utf-8-sig")
     print("Сводный отчет сохранен: crypto_report_final.csv")
