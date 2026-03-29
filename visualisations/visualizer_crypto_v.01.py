@@ -4,7 +4,15 @@ import pandas as pd
 import os
 
 def get_crypto_data():
-    db_path = "C:/Users/ivano/Desktop/Project3_CryptoScraper/dags/logic/scraper_data_v1.db"
+    # db_path = "C:/Users/ivano/Desktop/Project3_CryptoScraper/dags/logic/scraper_data_v1.db"
+        # Получаем директорию, где находится текущий скрипт
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+    
+    # Строим путь к БД относительно этой директории
+    db_path = os.path.join(parent_dir, 'dags', 'logic', 'scraper_data_v1.db')
+    
+    
     if not os.path.exists(db_path):
         print(f"Ошибка: Файл базы данных не найден!")
         return None
@@ -83,16 +91,6 @@ def create_artifacts(df):
     plt.savefig("crypto_micro_dynamics.png")
     print("Дополнительный артефакт сохранен: crypto_micro_dynamics.png")
 
-    # --- 5. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
-    # report1 = (df.groupby("coin_name")["price"].agg("max") - df.groupby("coin_name")["price"].agg("min"))/df.groupby("coin_name")["price"].agg("count")*2 
-    # report = df.groupby("coin_name")["price"].agg(["mean", "min", "max",  "count"]).reset_index()
-    
-    # report.columns = ["Валюта", "Средняя цена", "Минимум", "Максимум", "Темп изменения цены","Кол-во замеров"]
-    # # report = df.groupby("coin_name")["price"].agg(["mean", "min", "max",  "count"]).reset_index()
-    # print(report1, 92)
-   
-    # report.columns = ["Валюта", "Средняя цена", "Минимум", "Максимум", "Кол-во замеров"]
-    
     # --- 5. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
     report1 = (df.groupby("coin_name")["price"].agg("max") -
            df.groupby("coin_name")["price"].agg("min")) / \
