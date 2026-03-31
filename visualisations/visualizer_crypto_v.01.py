@@ -14,7 +14,7 @@ def get_crypto_data():
     
     
     if not os.path.exists(db_path):
-        print(f"Ошибка: Файл базы данных не найден!")
+        print("Ошибка: Файл базы данных не найден!")
         return None
 
     try:

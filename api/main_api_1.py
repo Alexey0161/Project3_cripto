@@ -2,6 +2,23 @@ import sqlite3
 import os
 from fastapi import FastAPI, Query # по всей видимости в инструменте fastapi есть нечто наподобие запроса sql?
 from typing import Optional # вообще не понимаю что это  и для чего мы этот инструмент берем в код?
+from pydantic import BaseModel
+from typing import List
+
+
+# Схема для ОДНОЙ записи о монете (соответствует колонкам в БД)
+class CryptoCoin(BaseModel):
+    id: int
+    coin_name: str
+    coin_ticker: str
+    price: float
+    date_checked: str
+
+# Схема для всего ОТВЕТА (то, что видит пользователь)
+class APIResponse(BaseModel):
+    count: int
+    version: str
+    result: List[CryptoCoin]
 
 app = FastAPI(title="Crypto Analytics API", version="1.1.0") #  вот это значение - version="1.1.0"  мы установили произвольно
 
@@ -39,17 +56,41 @@ def get_db_data(ticker: str = None, limit: int = 10, offset: int = 0): # это 
         # и в данном случае похоже, что cursor - это вся  таблица БД?
         return [dict(row) for row in cursor.fetchall()]
         
-@app.get("/prices", tags=["Данные"]) # судя по синтаксису - это декоратор. Но какой? Какой-то стандартный, который похоже, что формирует графику 
-# на странице браузера
+# @app.get("/prices", tags=["Данные"]) # судя по синтаксису - это декоратор. Но какой? Какой-то стандартный, который похоже, что формирует графику 
+# # на странице браузера
+# def read_prices(
+#     ticker: Optional[str] = Query(None, description="Тикер монеты (напр. BTC)"),
+#     limit: int = Query(10, le=100, description="Сколько записей вернуть"),
+#     offset: int = Query(0, description="Сколько записей пропустить")
+# ):
+#     """
+#     Получение среза данных. Реализована фильтрация по тикеру 
+#     и ограничение объема (пагинация) для защиты трафика.
+#     """
+#     data = get_db_data(ticker, limit, offset)
+#     # return {"count": len(data), "result": data}
+#     return {"count": len(data), "version": "1.1.0", "result": data}
+
+
+@app.get(
+    "/prices", 
+    tags=["Данные"], 
+    response_model=APIResponse, # <--- ЭТО САМОЕ ГЛАВНОЕ!
+    summary="Получить актуальные цены криптовалют"
+)
 def read_prices(
     ticker: Optional[str] = Query(None, description="Тикер монеты (напр. BTC)"),
-    limit: int = Query(10, le=100, description="Сколько записей вернуть"),
+    limit: int = Query(10, le=100, description="Сколько записей вернуть (макс 100)"),
     offset: int = Query(0, description="Сколько записей пропустить")
 ):
     """
-    Получение среза данных. Реализована фильтрация по тикеру 
-    и ограничение объема (пагинация) для защиты трафика.
+    Эндпоинт возвращает срез данных из БД.
+    Реализована пагинация (limit/offset) и фильтрация по тикеру.
     """
     data = get_db_data(ticker, limit, offset)
-    # return {"count": len(data), "result": data}
-    return {"count": len(data), "version": "1.1.0", "result": data}
+    # Возвращаем словарь, который FastAPI проверит по схеме APIResponse
+    return {
+        "count": len(data), 
+        "version": "1.1.0", 
+        "result": data
+    }
