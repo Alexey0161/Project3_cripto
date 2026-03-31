@@ -1,6 +1,6 @@
-
 import os
 import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "libs"))
 from datetime import datetime, timedelta  # ИСПРАВЛЕНО: добавили timedelta
 
@@ -12,6 +12,7 @@ if current_dir not in sys.path:
 try:
     from airflow import DAG
     from airflow.operators.python import PythonOperator
+
     AIRFLOW_AVAILABLE = True
 except ImportError:
     AIRFLOW_AVAILABLE = False
@@ -51,6 +52,8 @@ default_args = {
 }
 
 ensure_db_exists()
+
+
 def run_crypto_scraper_logic():
     """логика скрапинга"""
     print("--- DEBUG INFO START ---")
@@ -75,13 +78,14 @@ def run_crypto_scraper_logic():
 
     #   docker-compose.yaml содержит имя хоста 'selenium-chrome'
     driver = webdriver.Remote(
-        command_executor=selenium_url,  
+        command_executor=selenium_url,
         options=options,
     )
     try:
         print("Запуск скрапера на CoinMarketCap...")
         driver.get("https://coinmarketcap.com/")
         import time
+
         time.sleep(5)
         rows = driver.find_elements(By.CSS_SELECTOR, "table.cmc-table tbody tr")
         print(f"Найдено строк: {len(rows)}")
@@ -97,9 +101,7 @@ def run_crypto_scraper_logic():
                     By.CSS_SELECTOR, 'div [class*="sc-"] > span'
                 ).text
                 price_clean = clean_price(price_text)
-                print(
-                    f"Сохраняю: {name_clean} - {ticker} - {price_clean}"
-                )
+                print(f"Сохраняю: {name_clean} - {ticker} - {price_clean}")
                 insert_to_db(name_clean, ticker, price_clean, current_time)
             except Exception as e:
                 print(f"Пропуск строки: {e}")
@@ -108,16 +110,15 @@ def run_crypto_scraper_logic():
         driver.quit()
         print("Работа завершена, драйвер закрыт.")
 
+
 if AIRFLOW_AVAILABLE:
     # Описание DAG
-    with (
-        DAG(
-            "crypto_market_scraper_v1",
-            default_args=default_args,
-            description="My beautiful crypto scraper",
-            schedule_interval=timedelta(minutes=2),  # Ставим 2 минуты
-            catchup=False
-        )
+    with DAG(
+        "crypto_market_scraper_v1",
+        default_args=default_args,
+        description="My beautiful crypto scraper",
+        schedule_interval=timedelta(minutes=2),  # Ставим 2 минуты
+        catchup=False,
     ):
         # Собираем задачу для вызова функции
         task_run_scraper = PythonOperator(
@@ -128,7 +129,7 @@ else:
     # Если  не в Airflow,  запускаем функцию при старте файла
     if __name__ == "__main__":
         from datetime import datetime
+
         print("Запуск скрапера вручную...")
         # Вызываем  основную функцию
         run_crypto_scraper_logic()
-
