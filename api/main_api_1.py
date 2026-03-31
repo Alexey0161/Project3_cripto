@@ -78,7 +78,7 @@ def get_db_data(
 )
 def read_prices(
     ticker: Optional[str] = Query(None, description="Тикер монеты (напр. BTC)"),
-    limit: int = Query(10, le=100, description="Сколько записей вернуть (макс 100)"),
+    limit: int = Query(10, le=15, description="Сколько записей вернуть (макс 15)"),
     offset: int = Query(0, description="Сколько записей пропустить"),
 ):
     """
