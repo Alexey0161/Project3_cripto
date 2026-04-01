@@ -26,7 +26,7 @@ Uvicorn (ASGI сервер)
 3.2. Создание виртуального окружения: python -m venv venv
 
 3.3.Активация: 
-команды для Window: venv\Scripts\activate
+команды для Windows: venv\Scripts\activate
 
 Установка зависимостей: pip install -r requirements.txt
 
@@ -51,9 +51,17 @@ Uvicorn (ASGI сервер)
 
 
 5. Структура проекта
-Покажите, что у вас всё разложено по полочкам (папки dags, logic и т.д.).
 
-6. Особенности реализации (Для тех самых 6 баллов!)
+.
+├── api/
+│   └── main_api_1.py      # Основной файл API
+├── dags/
+│   └── logic/
+│       └── scraper_data_v1.db  # База данных
+├── requirements.txt       # Зависимости
+└── README.md              # Документация
+
+6. Особенности реализации 
 
 
 6.1. Защита от перегрузки: Ограничение limit до 15 записей (валидация через le=15 в FastAPI).
