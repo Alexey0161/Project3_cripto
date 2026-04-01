@@ -21,7 +21,6 @@ def insert_to_db(coin_name, coin_ticker, price, current_time):
         """,
             (coin_name, coin_ticker, price, current_time),
         )
-        
 
 
 if __name__ == "__main__":
