@@ -35,7 +35,7 @@ Infrastructure: Docker & Docker Compose (оркестрация контейне
 Клонирование репозитория:
 
 Bash
-git clone https://github.com/Alexey0161/Project3_cripto.git
+git clone https://github.com/Alexey0161/Project3_cripto.git 
 
 Подготавливаем окружение:
 
