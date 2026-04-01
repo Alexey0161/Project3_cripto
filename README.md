@@ -1,4 +1,5 @@
-проект "Crypto Analytics API"
+Проект "Crypto Analytics API" 
+
 1. Описание
 
 Crypto Analytics API v1.1.0
@@ -20,7 +21,7 @@ Uvicorn (ASGI сервер)
 
 Шаги:
 
-3.1. Клонирование репозитория: git clone https://github.com/Alexey0161/Project3_cripto/pull/2
+3.1. Клонирование репозитория: git clone https://github.com/Alexey0161/Project3_cripto.git
 
 3.2. Создание виртуального окружения: python -m venv venv
 
