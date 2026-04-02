@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "libs"))
-from datetime import datetime, timedelta  # ИСПРАВЛЕНО: добавили timedelta
+from datetime import datetime, timedelta  
 
 # Настраиваем пути, чтобы видеть папку logic
 current_dir = os.path.dirname(os.path.abspath(__file__))

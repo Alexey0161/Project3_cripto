@@ -11,6 +11,11 @@ services:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - SE_NODE_HOST=127.0.0.1
+      - SE_EVENT_BUS_HOST=127.0.0.1
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      
      
     command: standalone
     ports:
@@ -22,3 +27,4 @@ services:
       - "4444:4444"
       - "7900:7900"
     shm_size: '2gb'
+    
