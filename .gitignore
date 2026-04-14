@@ -4,3 +4,4 @@ venv/__pycache__/*.db
 *.рус
 **/__pycache__/
 **/logs/
+**/libs/
