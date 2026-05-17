@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto_scraper_alexey"
+version = "0.1.0"
+# ... ваши остальные настройки (description, dependencies) ...
+
+[tool.setuptools]
+# Явно указываем, где искать пакеты
+package-dir = {"" = "dags"} # Заменил 'src_2' на имя  папки с кодом dags
+packages = {find = {where = ["dags"]}} # И здесь тоже заменил на актуальное имя папки

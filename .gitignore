@@ -1,0 +1,8 @@
+venv/__pycache__/*.db
+*.db
+**/Varianty_coda/
+*.рус
+**/__pycache__/
+**/logs/
+**/libs/
+delete_table.py
