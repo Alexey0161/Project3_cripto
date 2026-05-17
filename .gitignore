@@ -5,3 +5,4 @@ venv/__pycache__/*.db
 **/__pycache__/
 **/logs/
 **/libs/
+delete_table.py

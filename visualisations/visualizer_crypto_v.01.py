@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
-<<<<<<< HEAD
+
 def get_crypto_data():
     # db_path = "C:/Users/ivano/Desktop/Project3_CryptoScraper/dags/logic/scraper_data_v1.db"
         # Получаем директорию, где находится текущий скрипт
@@ -16,7 +16,7 @@ def get_crypto_data():
     
     if not os.path.exists(db_path):
         print(f"Ошибка: Файл базы данных не найден!")
-=======
+
 
 def get_crypto_data():
 
@@ -29,7 +29,7 @@ def get_crypto_data():
 
     if not os.path.exists(db_path):
         print("Ошибка: Файл базы данных не найден!")
->>>>>>> feature/api
+
         return None
 
     try:
@@ -45,10 +45,9 @@ def get_crypto_data():
         print(f" Ошибка при чтении БД: {e}")
         return None
 
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/api
+
+
 def create_artifacts(df):
     if df is None or df.empty:
         print("Данных для анализа нет.")
@@ -56,7 +55,7 @@ def create_artifacts(df):
 
     # --- 1. ОЧИСТКА ДАННЫХ  ---
     # Убираем  ошибки скрапинга: BTC не может стоить меньше 10k в 2026 году
-<<<<<<< HEAD
+
     df = df.drop(df[(df['coin_name'] == 'Bitcoin') & (df['price'] < 10000)].index)
     # Убираем пустые или маленькие цены (чтобы они мешают логарифмической шкале)
     df = df[df['price'] > 1] 
@@ -103,7 +102,7 @@ def create_artifacts(df):
         # не используем логарифм, чтобы  график захватил центы этой монеты
         axes[i].set_ylabel("Цена (USD)")
         axes[i].legend(loc='upper left')
-=======
+
     df = df.drop(df[(df["coin_name"] == "Bitcoin") & (df["price"] < 10000)].index)
     # Убираем пустые или маленькие цены (чтобы они мешают логарифмической шкале)
     df = df[df["price"] > 1]
@@ -162,7 +161,7 @@ def create_artifacts(df):
         # не используем логарифм, чтобы  график захватил центы этой монеты
         axes[i].set_ylabel("Цена (USD)")
         axes[i].legend(loc="upper left")
->>>>>>> feature/api
+
         axes[i].grid(True, alpha=0.3)
 
     plt.xlabel("Дата и время")
@@ -172,7 +171,7 @@ def create_artifacts(df):
     print("Дополнительный артефакт сохранен: crypto_micro_dynamics.png")
 
     # --- 5. СВОДНЫЙ ОТЧЕТ (Артефакт №2) ---
-<<<<<<< HEAD
+
     report1 = (df.groupby("coin_name")["price"].agg("max") -
            df.groupby("coin_name")["price"].agg("min")) / \
           df.groupby("coin_name")["price"].agg("count") * 2
@@ -185,7 +184,7 @@ def create_artifacts(df):
     report = df.groupby("coin_name")["price"].agg(
         ["mean", "min", "max", "count"]
     ).reset_index()
-=======
+
     report1 = (
         (
             df.groupby("coin_name")["price"].agg("max")
@@ -205,12 +204,12 @@ def create_artifacts(df):
         .agg(["mean", "min", "max", "count"])
         .reset_index()
     )
->>>>>>> feature/api
+
 
     # Переименовываем колонки в report
     report.columns = ["Валюта", "Средняя цена", "Минимум", "Максимум", "Кол-во замеров"]
 
-<<<<<<< HEAD
+
     # Шаг 3: объединяем таблицы
     final_report = pd.merge(report, temp_change, on='Валюта', how='left')
 
@@ -224,7 +223,7 @@ def create_artifacts(df):
 if __name__ == "__main__":
     data = get_crypto_data()
     create_artifacts(data)
-=======
+
     # Шаг 5.3: объединяем таблицы
     final_report = pd.merge(report, temp_change, on="Валюта", how="left")
 
@@ -239,4 +238,4 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     data = get_crypto_data()
     create_artifacts(data)
->>>>>>> feature/api
+
